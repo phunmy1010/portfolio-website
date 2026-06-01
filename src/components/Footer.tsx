@@ -12,7 +12,7 @@ export default function Footer({ setTab }: FooterProps) {
         <div className="flex flex-col gap-3">
           <span className="font-serif text-2xl font-bold bg-gradient-to-r from-pink-300 via-rose-200 to-amber-200 bg-clip-text text-transparent">Joshua.B</span>
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-sm font-sans">
-            Lagos-based virtual tech specialist and UI/UX designer. Bridging aesthetics, rapid organization, and no-code operations for fast-growing global brands.
+            Benin City-based virtual tech specialist and UI/UX designer. Bridging aesthetics, rapid organization, and no-code operations for fast-growing global brands.
           </p>
         </div>
 

@@ -50,7 +50,7 @@ const ALL_PROJECTS: CaseStudy[] = [
     tools: ["Figma", "User Interviews", "Canva", "AI Writing"],
     detailsHtml: {
       overview: "NaijaStable addresses financial exclusion in Nigerian retail hubs by translating complex currency-hedging metrics into digestible local cues.",
-      discovery: "During field research in Lagos and Enugu, we observed sellers confirming customer transfers through phone screen captures due to deep-seated mistrust in SMS cues.",
+      discovery: "During field research in Benin City and Enugu, we observed sellers confirming customer transfers through phone screen captures due to deep-seated mistrust in SMS cues.",
       results: "Testing demonstrated a 92% decline in transaction confirmation confusion and an immediate increase in daily transfer confidence indices."
     }
   },

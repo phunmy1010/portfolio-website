@@ -10,7 +10,8 @@ import {
   Search, 
   Briefcase, 
   Layers, 
-  Heart 
+  Heart,
+  ArrowUpRight
 } from "lucide-react";
 
 interface HomeViewProps {
@@ -116,7 +117,7 @@ export default function HomeView({ setTab }: HomeViewProps) {
           <div className="lg:col-span-7 space-y-6 text-left">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-pink-500/15 border border-pink-500/20 text-[#e493b3] font-sans text-xs font-semibold uppercase tracking-wider rounded-full shadow-sm">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Lagos, Nigeria • Remote Global Deliveries</span>
+              <span>Benin City, Nigeria • Remote Global Deliveries</span>
             </span>
 
             <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white">
@@ -185,7 +186,7 @@ export default function HomeView({ setTab }: HomeViewProps) {
       </section>
 
       {/* About Section */}
-      <section className="bg-gradient-to-b from-[#13101a] to-[#0c0a12] rounded-[40px] px-8 py-14 max-w-5xl mx-auto border border-white/5 shadow-2xl relative overflow-hidden">
+      <section className="mx-4 sm:mx-6 lg:mx-auto bg-gradient-to-b from-[#13101a] to-[#0c0a12] rounded-[24px] sm:rounded-[40px] px-6 sm:px-8 py-10 sm:py-14 max-w-5xl border border-white/5 shadow-2xl relative overflow-hidden">
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-pink-500/5 rounded-full blur-2xl"></div>
         
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 relative z-10">
@@ -256,7 +257,7 @@ export default function HomeView({ setTab }: HomeViewProps) {
       </section>
 
       {/* Selected Bento Box Workspace Details (Image highlights) */}
-      <section className="px-6 max-w-[90vw] lg:max-w-5xl mx-auto space-y-8">
+      <section className="px-6 w-full max-w-5xl mx-auto space-y-8">
         <h3 className="font-serif text-2xl sm:text-3xl text-left text-white max-w-lg leading-tight">
           Visual Sneak-Peek of My Design Standard:
         </h3>
@@ -296,6 +297,79 @@ export default function HomeView({ setTab }: HomeViewProps) {
                 className="w-full h-full object-cover hover:scale-[1.03] transition-transform duration-300"
               />
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Open Source Contribution Section */}
+      <section className="px-6 max-w-5xl mx-auto space-y-8">
+        <div className="text-left space-y-2">
+          <span className="block text-xs font-bold uppercase tracking-widest text-[#e493b3]">Open Source Contribution</span>
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight">Community Curation</h2>
+        </div>
+
+        <div className="group relative bg-[#13111c] border border-white/5 rounded-3xl p-6 sm:p-8 hover:-translate-y-1 transition-all duration-300 shadow-lg hover:shadow-xl hover:border-pink-500/15 overflow-hidden text-left">
+          {/* Ambient Hover Glow */}
+          <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6 relative z-10">
+            <div className="space-y-1">
+              <span className="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase tracking-widest">
+                Organisation
+              </span>
+              <h4 className="text-sm font-bold text-[#e493b3] uppercase tracking-wider">
+                Waldron Lab · Outreachy Program
+              </h4>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <span className="text-[9px] font-bold uppercase tracking-widest bg-pink-500/15 border border-pink-500/10 px-2.5 py-1 text-pink-300 rounded-md">
+                Open Source
+              </span>
+              <span className="text-[9px] font-bold uppercase tracking-widest bg-white/5 px-2.5 py-1 text-slate-300 rounded-md">
+                Ongoing
+              </span>
+            </div>
+          </div>
+
+          <div className="space-y-4 relative z-10">
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                Role &amp; Project
+              </span>
+              <h3 className="font-sans font-bold text-lg sm:text-xl text-white group-hover:text-pink-300 transition-colors">
+                BugSigDB — Open Source Contributor
+              </h3>
+            </div>
+
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
+              Contributing to BugSigDB, an academic database cataloguing microbial signatures from published research. Work includes curating peer-reviewed studies, extracting experimental metadata, and submitting structured records via GitHub for community review.
+            </p>
+
+            {/* Details Tags */}
+            <div className="flex flex-wrap gap-2 pt-2 border-t border-white/5 items-center">
+              <span className="text-[10px] font-bold uppercase text-slate-400 mr-2">Details:</span>
+              <span className="bg-white/5 border border-white/5 px-3 py-1 rounded-lg text-xs text-slate-300">
+                Literature curation
+              </span>
+              <span className="bg-white/5 border border-white/5 px-3 py-1 rounded-lg text-xs text-slate-300">
+                GitHub contributions
+              </span>
+              <span className="bg-white/5 border border-white/5 px-3 py-1 rounded-lg text-xs text-slate-300">
+                Microbiome research
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-8 flex justify-start relative z-10">
+            <a 
+              href="https://github.com/waldronlab/BugSigDB/issues?q=author%3Aphunmy1010"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 bg-gradient-to-r from-pink-500/10 to-violet-500/5 hover:from-pink-500/20 hover:to-violet-500/15 border border-pink-500/20 hover:border-pink-500/30 text-slate-200 hover:text-white font-sans font-bold text-xs uppercase tracking-widest px-5 py-3.5 rounded-xl transition-all shadow-sm cursor-pointer"
+            >
+              <span>View Issue Contributions on GitHub</span>
+              <ArrowUpRight className="w-4 h-4 text-[#e493b3]" />
+            </a>
           </div>
         </div>
       </section>

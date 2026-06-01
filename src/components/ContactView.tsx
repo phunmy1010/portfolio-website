@@ -223,7 +223,7 @@ export default function ContactView({ setTab }: ContactViewProps) {
           {/* Response metrics warning badge */}
           <div className="flex items-center gap-2 text-xs text-slate-400 font-sans justify-center sm:justify-start">
             <Clock className="w-4 h-4 text-pink-300" />
-            <span>Operational within Lagos (UTC+1) hours.</span>
+            <span>Operational within Benin City (UTC+1) hours.</span>
           </div>
         </div>
 
