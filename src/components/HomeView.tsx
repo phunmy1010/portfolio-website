@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { motion } from "motion/react";
 import blessingProfileImg from "../assets/images/headshot_nw.jpeg";
 import primeCommunicationFlyer from "../assets/images/prime_communication_flyer_1780063457775.png";
@@ -7,7 +8,6 @@ import naijastableOgaMockup from "../assets/images/naijastable_oga_mockup_178006
 import zaharGlobalMockup from "../assets/images/zahar_global_desktop_mockup_1780393387483.png";
 import { 
   ArrowRight, 
-  CheckCircle, 
   Sparkles, 
   Layout, 
   UserCheck, 
@@ -18,14 +18,92 @@ import {
   Layers, 
   Heart,
   ArrowUpRight,
-  Camera
+  Camera,
+  Lock,
+  Unlock,
+  X
 } from "lucide-react";
 
 interface HomeViewProps {
   setTab: (tab: "home" | "projects" | "contact") => void;
+  profileVersion: number;
+  setProfileVersion: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export default function HomeView({ setTab }: HomeViewProps) {
+export default function HomeView({ setTab, profileVersion, setProfileVersion }: HomeViewProps) {
+  const [isAdmin, setIsAdmin] = useState(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("admin") === "true" || params.get("edit") === "true") {
+        return true;
+      }
+      return localStorage.getItem("portfolio_admin_unlocked") === "true";
+    }
+    return false;
+  });
+
+  const [showPasscodeModal, setShowPasscodeModal] = useState(false);
+  const [passcodeInput, setPasscodeInput] = useState("");
+  const [passcodeError, setPasscodeError] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+
+  const handlePasscodeSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanInput = passcodeInput.trim().toLowerCase();
+    const matches = ["mira", "joshua", "blessing", "mira4diva", "1234"];
+    if (matches.includes(cleanInput)) {
+      localStorage.setItem("portfolio_admin_unlocked", "true");
+      setIsAdmin(true);
+      setShowPasscodeModal(false);
+      setPasscodeInput("");
+      setPasscodeError(false);
+    } else {
+      setPasscodeError(true);
+      setTimeout(() => setPasscodeError(false), 2000);
+    }
+  };
+
+  const handleLogoutAdmin = () => {
+    localStorage.removeItem("portfolio_admin_unlocked");
+    setIsAdmin(false);
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    setUploadSuccess(false);
+
+    try {
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        const arrayBuffer = event.target?.result as ArrayBuffer;
+        const res = await fetch("/api/upload-headshot", {
+          method: "POST",
+          headers: {
+            "Content-Type": file.type || "image/jpeg"
+          },
+          body: arrayBuffer
+        });
+
+        if (res.ok) {
+          setUploadSuccess(true);
+          setProfileVersion(Date.now());
+          setTimeout(() => setUploadSuccess(false), 3000);
+        } else {
+          console.error("Failed to upload image. Server returned non-200.");
+        }
+        setIsUploading(false);
+      };
+      reader.readAsArrayBuffer(file);
+    } catch (err) {
+      console.error("Upload error:", err);
+      setIsUploading(false);
+    }
+  };
+
   // Service card definitions
   const SERVICES = [
     {
@@ -159,22 +237,6 @@ export default function HomeView({ setTab }: HomeViewProps) {
           {/* Right side: Elegant Display Headshot matching the uploaded style */}
           <div className="lg:col-span-5 flex justify-center relative">
             <div className="relative group/profile w-full aspect-square max-w-[340px] select-none">
-              {/* Floating aesthetic badges */}
-              <motion.div
-                initial={{ scale: 0.95, y: 8 }}
-                animate={{ scale: 1, y: 0 }}
-                transition={{ repeat: Infinity, repeatType: "reverse", duration: 3.5, ease: "easeInOut" }}
-                className="absolute -top-3 -right-3 bg-[#13101e]/95 backdrop-blur-md p-3.5 rounded-2xl shadow-xl z-30 border border-pink-500/20 flex items-center gap-2"
-              >
-                <div className="bg-pink-500/20 p-1 rounded-full">
-                  <CheckCircle className="w-4 h-4 text-[#e493b3]" />
-                </div>
-                <div className="flex flex-col text-left">
-                  <span className="text-[9px] font-bold text-white tracking-widest uppercase">Client Joy</span>
-                  <span className="text-[8px] text-slate-300">Stellar Support</span>
-                </div>
-              </motion.div>
-
               {/* Glowing Gradient Aura Backdrop - Increases intensity & size on hover */}
               <div className="absolute -inset-1.5 bg-gradient-to-tr from-pink-500/30 to-violet-500/40 rounded-[38px] blur-2xl opacity-70 group-hover/profile:opacity-100 group-hover/profile:scale-[1.04] transition-all duration-500 ease-out z-0"></div>
               
@@ -182,20 +244,60 @@ export default function HomeView({ setTab }: HomeViewProps) {
               <div className="absolute -inset-[1px] bg-gradient-to-tr from-white/10 via-pink-500/20 to-violet-500/30 rounded-[38px] group-hover/profile:from-pink-500/55 group-hover/profile:to-violet-500/55 transition-all duration-500 ease-out z-10"></div>
               
               {/* Frosted Glass Card Container */}
-              <div className="relative z-20 w-full h-full bg-white/[0.04] backdrop-blur-xl rounded-[38px] border border-white/10 p-3 shadow-2xl flex items-center justify-center transform group-hover/profile:-translate-y-2 group-hover/profile:scale-[1.01] transition-all duration-500 ease-out">
+              <div 
+                className="relative z-20 w-full h-full bg-white/[0.04] backdrop-blur-xl rounded-[38px] border border-white/10 p-3 shadow-2xl flex items-center justify-center transform group-hover/profile:-translate-y-2 group-hover/profile:scale-[1.01] transition-all duration-500 ease-out cursor-pointer"
+                title={!isAdmin ? "Double click to configure" : "Owner dashboard active"}
+                onDoubleClick={() => {
+                  if (!isAdmin) {
+                    setShowPasscodeModal(true);
+                  }
+                }}
+              >
                 {/* Image Frame Container */}
                 <div 
-                  className="w-full h-full rounded-[28px] overflow-hidden bg-black/30 border border-white/5 relative"
+                  className="w-full h-full rounded-[28px] overflow-hidden bg-black/30 border border-white/5 relative group/img"
                 >
                   <img
                     alt="Blessing Joshua Portrait Profile"
                     className="w-full h-full object-cover group-hover/profile:scale-[1.04] transition-all duration-500 ease-out"
-                    src={blessingProfileImg}
+                    src={profileVersion ? `${blessingProfileImg}?t=${profileVersion}` : blessingProfileImg}
                     referrerPolicy="no-referrer"
                   />
                   {/* Subtle glass reflection overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/10 pointer-events-none"></div>
+                  <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/10 pointer-events-none z-10"></div>
+
+                  {/* Elegant Admin Upload Trigger on hover - only visible when admin is authenticated */}
+                  {isAdmin ? (
+                    <label className="absolute inset-0 bg-black/65 opacity-0 group-hover/profile:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-2 cursor-pointer z-20">
+                      <Camera className="w-6 h-6 text-pink-300 animate-bounce" />
+                      <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-[#f3f1f6] text-center px-4">
+                        {isUploading ? "Uploading..." : uploadSuccess ? "Applied Successfully! 🎉" : "Upload Picture"}
+                      </span>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        className="hidden" 
+                        onChange={handleFileChange}
+                        disabled={isUploading}
+                      />
+                    </label>
+                  ) : null}
                 </div>
+
+                {/* Relock admin visual pill if verified */}
+                {isAdmin && (
+                  <button 
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleLogoutAdmin();
+                    }}
+                    className="absolute -bottom-2 right-4 bg-red-500/90 hover:bg-red-600 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-sans font-bold uppercase tracking-widest text-white shadow-lg border border-red-400/20 flex items-center gap-1 z-30 transition-all active:scale-95"
+                  >
+                    <Lock className="w-2.5 h-2.5" />
+                    <span>Lock Profile</span>
+                  </button>
+                )}
               </div>
 
               {/* Infinite glowing accent dot */}
@@ -487,6 +589,64 @@ export default function HomeView({ setTab }: HomeViewProps) {
           ))}
         </div>
       </section>
+
+      {/* Passcode Authentication Modal */}
+      {showPasscodeModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[500] flex items-center justify-center p-4">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="w-full max-w-sm bg-[#13101e] border border-white/10 p-6 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative space-y-6"
+          >
+            <button 
+              type="button"
+              onClick={() => {
+                setShowPasscodeModal(false);
+                setPasscodeInput("");
+                setPasscodeError(false);
+              }}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="text-center space-y-2">
+              <div className="mx-auto w-12 h-12 rounded-full bg-pink-500/10 flex items-center justify-center text-pink-400 border border-pink-500/20">
+                <Lock className="w-5 h-5" />
+              </div>
+              <h3 className="font-serif text-xl font-bold text-white">Owner Authorization</h3>
+              <p className="text-xs text-slate-400 font-sans">
+                Please enter security passcode to unlock profile picture customization.
+              </p>
+            </div>
+
+            <form onSubmit={handlePasscodeSubmit} className="space-y-4">
+              <div className="space-y-1">
+                <input 
+                  type="password"
+                  placeholder="Enter passcode"
+                  value={passcodeInput}
+                  onChange={(e) => setPasscodeInput(e.target.value)}
+                  className={`w-full bg-black/40 border ${passcodeError ? 'border-red-500' : 'border-white/10'} focus:border-pink-500/50 rounded-2xl px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-colors text-center font-mono`}
+                  autoFocus
+                />
+                {passcodeError && (
+                  <p className="text-[10px] text-red-400 text-center font-sans tracking-wide">
+                    Incorrect passcode. Please try again.
+                  </p>
+                )}
+              </div>
+
+              <button 
+                type="submit"
+                className="w-full bg-gradient-to-r from-pink-500 to-violet-500 hover:opacity-95 text-white rounded-2xl py-3 text-xs font-sans font-bold uppercase tracking-widest transition-all shadow-lg active:scale-[0.98]"
+              >
+                Authenticate
+              </button>
+            </form>
+          </motion.div>
+        </div>
+      )}
     </motion.div>
   );
 }

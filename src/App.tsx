@@ -8,15 +8,22 @@ import { Briefcase, User, Settings, Mail } from "lucide-react";
 
 export default function App() {
   const [currentTab, setTab] = useState<"home" | "projects" | "contact" >("home");
+  const [profileVersion, setProfileVersion] = useState<number>(Date.now());
 
   return (
     <div className="min-h-screen bg-[#0c0a12] text-slate-100 antialiased flex flex-col pt-24 pb-20 sm:pb-8 selection:bg-pink-500/35 selection:text-white">
       {/* Dynamic Header */}
-      <Header currentTab={currentTab} setTab={setTab} />
+      <Header currentTab={currentTab} setTab={setTab} profileVersion={profileVersion} />
 
       {/* Primary Layout container */}
       <main className="flex-1 w-full flex flex-col text-slate-100">
-        {currentTab === "home" && <HomeView setTab={setTab} />}
+        {currentTab === "home" && (
+          <HomeView 
+            setTab={setTab} 
+            profileVersion={profileVersion} 
+            setProfileVersion={setProfileVersion} 
+          />
+        )}
         {currentTab === "projects" && <ProjectsView setTab={setTab} />}
         {currentTab === "contact" && <ContactView setTab={setTab} />}
       </main>

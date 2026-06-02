@@ -4,9 +4,10 @@ import blessingProfileImg from "../assets/images/headshot_nw.jpeg";
 interface HeaderProps {
   currentTab: "home" | "projects" | "contact";
   setTab: (tab: "home" | "projects" | "contact") => void;
+  profileVersion?: number;
 }
 
-export default function Header({ currentTab, setTab }: HeaderProps) {
+export default function Header({ currentTab, setTab, profileVersion }: HeaderProps) {
   return (
     <header className="fixed top-0 left-0 right-0 z-[100] bg-[#0c0a12]/85 backdrop-blur-md px-6 py-4 flex justify-between items-center border-b border-white/5 shadow-lg">
 
@@ -69,7 +70,7 @@ export default function Header({ currentTab, setTab }: HeaderProps) {
             <img
               alt="Blessing Joshua Headshot"
               className="w-full h-full object-cover"
-              src={blessingProfileImg}
+              src={profileVersion ? `${blessingProfileImg}?t=${profileVersion}` : blessingProfileImg}
               referrerPolicy="no-referrer"
             />
           </div>
