@@ -1,11 +1,10 @@
 import { motion } from "motion/react";
-import blessingProfileImg from "../assets/images/blessing_profile_portrait.png";
+import blessingProfileImg from "../assets/images/headshot_nw.jpeg";
 import primeCommunicationFlyer from "../assets/images/prime_communication_flyer_1780063457775.png";
 import horizonSalonMockup from "../assets/images/horizon_salon_desktop_mockup_1780394945145.png";
 import abPrimeMockup from "../assets/images/ab_prime_mockup_1780061686438.png";
 import naijastableOgaMockup from "../assets/images/naijastable_oga_mockup_1780062604140.png";
 import zaharGlobalMockup from "../assets/images/zahar_global_desktop_mockup_1780393387483.png";
-import { useRef, useState, useEffect, ChangeEvent } from "react";
 import { 
   ArrowRight, 
   CheckCircle, 
@@ -27,47 +26,6 @@ interface HomeViewProps {
 }
 
 export default function HomeView({ setTab }: HomeViewProps) {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [imgSrc, setImgSrc] = useState(`${blessingProfileImg}?v=${Date.now()}`);
-
-  useEffect(() => {
-    const handleUpdate = () => {
-      setImgSrc(`${blessingProfileImg}?v=${Date.now()}`);
-    };
-    window.addEventListener("profile-picture-updated", handleUpdate);
-    return () => {
-      window.removeEventListener("profile-picture-updated", handleUpdate);
-    };
-  }, []);
-
-  const handleAvatarClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const response = await fetch("/api/upload-headshot", {
-        method: "POST",
-        headers: {
-          "Content-Type": file.type || "image/jpeg",
-        },
-        body: arrayBuffer,
-      });
-
-      if (response.ok) {
-        window.dispatchEvent(new Event("profile-picture-updated"));
-      } else {
-        alert("Failed to upload image. Please try again with a valid image file.");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Error uploading image file.");
-    }
-  };
   // Service card definitions
   const SERVICES = [
     {
@@ -227,30 +185,16 @@ export default function HomeView({ setTab }: HomeViewProps) {
               <div className="relative z-20 w-full h-full bg-white/[0.04] backdrop-blur-xl rounded-[38px] border border-white/10 p-3 shadow-2xl flex items-center justify-center transform group-hover/profile:-translate-y-2 group-hover/profile:scale-[1.01] transition-all duration-500 ease-out">
                 {/* Image Frame Container */}
                 <div 
-                  onClick={handleAvatarClick}
-                  className="w-full h-full rounded-[28px] overflow-hidden bg-black/30 border border-white/5 relative cursor-pointer group/image"
-                  title="Click to upload headshot nw.jpeg exactly"
+                  className="w-full h-full rounded-[28px] overflow-hidden bg-black/30 border border-white/5 relative"
                 >
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    accept="image/*"
-                    className="hidden"
-                  />
                   <img
                     alt="Blessing Joshua Portrait Profile"
-                    className="w-full h-full object-cover group-hover/profile:scale-[1.04] group-hover/image:scale-[1.05] transition-all duration-500 ease-out"
-                    src={imgSrc}
+                    className="w-full h-full object-cover group-hover/profile:scale-[1.04] transition-all duration-500 ease-out"
+                    src={blessingProfileImg}
                     referrerPolicy="no-referrer"
                   />
                   {/* Subtle glass reflection overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/10 pointer-events-none group-hover/image:from-black/40 transition-all duration-500"></div>
-                  {/* Elegant overlay on image hover to prompt uploader */}
-                  <div className="absolute inset-0 bg-black/55 opacity-0 group-hover/image:opacity-100 flex flex-col items-center justify-center gap-1.5 transition-opacity duration-300">
-                    <Camera className="w-6 h-6 text-pink-300" />
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#e493b3]">Upload exact photo</span>
-                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/10 pointer-events-none"></div>
                 </div>
               </div>
 

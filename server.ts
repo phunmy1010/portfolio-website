@@ -117,8 +117,8 @@ app.post("/api/upload-headshot", express.raw({ type: "image/*", limit: "15mb" })
 
     const targetPaths = [
       path.join(process.cwd(), "src/assets/images/blessing_profile_portrait.png"),
-      path.join(process.cwd(), "public/headshot nw.jpeg"),
-      path.join(process.cwd(), "src/assets/images/headshot nw.jpeg")
+      path.join(process.cwd(), "public/headshot_nw.jpeg"),
+      path.join(process.cwd(), "src/assets/images/headshot_nw.jpeg")
     ];
 
     // Ensure parent directories exist and write binary data
