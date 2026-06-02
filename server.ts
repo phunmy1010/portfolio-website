@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import fs from "fs";
 import dotenv from "dotenv";
 import { GoogleGenAI } from "@google/genai";
 import { createServer as createViteServer } from "vite";
@@ -104,6 +105,49 @@ app.post("/api/chat", async (req, res) => {
 // Serve health status
 app.get("/api/health", (req, res) => {
   res.json({ status: "healthy", time: new Date() });
+});
+
+// Endpoint to upload local profile headshots and persist them exactly as-is
+app.post("/api/upload-headshot", express.raw({ type: "image/*", limit: "15mb" }), (req, res) => {
+  try {
+    const binaryData = req.body;
+    if (!binaryData || binaryData.length === 0) {
+      return res.status(400).json({ error: "No image data received" });
+    }
+
+    const targetPaths = [
+      path.join(process.cwd(), "src/assets/images/blessing_profile_portrait.png"),
+      path.join(process.cwd(), "public/headshot nw.jpeg"),
+      path.join(process.cwd(), "src/assets/images/headshot nw.jpeg")
+    ];
+
+    // Ensure parent directories exist and write binary data
+    for (const targetPath of targetPaths) {
+      const dir = path.dirname(targetPath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      fs.writeFileSync(targetPath, binaryData);
+      console.log(`Saved uploaded image to: ${targetPath}`);
+    }
+
+    // Overwrite any matching pre-compiled files in dist/assets so it shows live instantly without rebuild
+    const distAssetsDir = path.join(process.cwd(), "dist/assets");
+    if (fs.existsSync(distAssetsDir)) {
+      const files = fs.readdirSync(distAssetsDir);
+      for (const file of files) {
+        if (file.startsWith("blessing_profile_portrait") && file.endsWith(".png")) {
+          fs.writeFileSync(path.join(distAssetsDir, file), binaryData);
+          console.log(`Overwrote dist asset: ${file}`);
+        }
+      }
+    }
+
+    return res.json({ success: true, message: "Headshot uploaded and applied successfully!" });
+  } catch (error: any) {
+    console.error("Upload error:", error);
+    return res.status(500).json({ error: error.message });
+  }
 });
 
 // Setup Vite Dev server or static asset serving

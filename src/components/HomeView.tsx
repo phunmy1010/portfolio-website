@@ -1,4 +1,11 @@
 import { motion } from "motion/react";
+import blessingProfileImg from "../assets/images/blessing_profile_portrait.png";
+import primeCommunicationFlyer from "../assets/images/prime_communication_flyer_1780063457775.png";
+import horizonSalonMockup from "../assets/images/horizon_salon_desktop_mockup_1780394945145.png";
+import abPrimeMockup from "../assets/images/ab_prime_mockup_1780061686438.png";
+import naijastableOgaMockup from "../assets/images/naijastable_oga_mockup_1780062604140.png";
+import zaharGlobalMockup from "../assets/images/zahar_global_desktop_mockup_1780393387483.png";
+import { useRef, useState, useEffect, ChangeEvent } from "react";
 import { 
   ArrowRight, 
   CheckCircle, 
@@ -11,7 +18,8 @@ import {
   Briefcase, 
   Layers, 
   Heart,
-  ArrowUpRight
+  ArrowUpRight,
+  Camera
 } from "lucide-react";
 
 interface HomeViewProps {
@@ -19,6 +27,47 @@ interface HomeViewProps {
 }
 
 export default function HomeView({ setTab }: HomeViewProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [imgSrc, setImgSrc] = useState(`${blessingProfileImg}?v=${Date.now()}`);
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setImgSrc(`${blessingProfileImg}?v=${Date.now()}`);
+    };
+    window.addEventListener("profile-picture-updated", handleUpdate);
+    return () => {
+      window.removeEventListener("profile-picture-updated", handleUpdate);
+    };
+  }, []);
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const response = await fetch("/api/upload-headshot", {
+        method: "POST",
+        headers: {
+          "Content-Type": file.type || "image/jpeg",
+        },
+        body: arrayBuffer,
+      });
+
+      if (response.ok) {
+        window.dispatchEvent(new Event("profile-picture-updated"));
+      } else {
+        alert("Failed to upload image. Please try again with a valid image file.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error uploading image file.");
+    }
+  };
   // Service card definitions
   const SERVICES = [
     {
@@ -86,7 +135,7 @@ export default function HomeView({ setTab }: HomeViewProps) {
       quote: "Working with Blessing has been a really good experience for my business. She helped improve our online presence by designing a clean and professional webpage for AB PRIME MOBILE COMMUNICATION that properly showcases our gadget sales, swapping, and repair services.\n\nShe also assists with managing our social media page, helping us stay active online and present our business in a more organized and attractive way. I appreciate her creativity, communication, and willingness to listen to ideas while still bringing professional suggestions to the table.\n\nSince working with her, our brand looks more polished and trustworthy online. I would definitely recommend her to businesses looking for digital support, UI/UX design, or social media assistance.",
       author: "Ebuka",
       role: "CEO, AB Prime Mobile Communication • Benin City",
-      avatar: "/src/assets/images/prime_communication_flyer_1780063457775.png"
+      avatar: primeCommunicationFlyer
     },
     {
       quote: "Blessing transformed how our salon is positioned online. She designed a stunning, modern digital service menu and eye-catching social templates that match the luxury experience at Horizon Mega Unisex Salon. She also helped structure our online scheduling, making bookings incredibly easy for our clients here in Benin City. Her focus on premium aesthetics, clear communication, and operational organization has made a massive difference for our business!",
@@ -94,7 +143,7 @@ export default function HomeView({ setTab }: HomeViewProps) {
       workDeliverables: [
         {
           title: "Horizon Salon Brand Visual",
-          imageUrl: "/src/assets/images/horizon_salon_mockup_1780064689478.png"
+          imageUrl: horizonSalonMockup
         }
       ]
     }
@@ -121,7 +170,7 @@ export default function HomeView({ setTab }: HomeViewProps) {
             </span>
 
             <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight text-white">
-              Joshua Blessing
+              Blessing Joshua
             </h1>
             
             <p className="font-sans text-lg sm:text-xl font-medium text-amber-100/90 tracking-wide">
@@ -151,13 +200,13 @@ export default function HomeView({ setTab }: HomeViewProps) {
 
           {/* Right side: Elegant Display Headshot matching the uploaded style */}
           <div className="lg:col-span-5 flex justify-center relative">
-            <div className="relative w-full aspect-square max-w-[340px]">
+            <div className="relative group/profile w-full aspect-square max-w-[340px] select-none">
               {/* Floating aesthetic badges */}
               <motion.div
                 initial={{ scale: 0.95, y: 8 }}
                 animate={{ scale: 1, y: 0 }}
                 transition={{ repeat: Infinity, repeatType: "reverse", duration: 3.5, ease: "easeInOut" }}
-                className="absolute -top-3 -right-3 bg-[#13101e]/95 backdrop-blur-md p-3.5 rounded-2xl shadow-xl z-20 border border-pink-500/20 flex items-center gap-2"
+                className="absolute -top-3 -right-3 bg-[#13101e]/95 backdrop-blur-md p-3.5 rounded-2xl shadow-xl z-30 border border-pink-500/20 flex items-center gap-2"
               >
                 <div className="bg-pink-500/20 p-1 rounded-full">
                   <CheckCircle className="w-4 h-4 text-[#e493b3]" />
@@ -168,18 +217,45 @@ export default function HomeView({ setTab }: HomeViewProps) {
                 </div>
               </motion.div>
 
-              <div className="absolute inset-0 bg-gradient-to-tr from-pink-500/25 to-violet-500/35 rounded-[36px] rotate-3 scale-102 shadow-2xl"></div>
+              {/* Glowing Gradient Aura Backdrop - Increases intensity & size on hover */}
+              <div className="absolute -inset-1.5 bg-gradient-to-tr from-pink-500/30 to-violet-500/40 rounded-[38px] blur-2xl opacity-70 group-hover/profile:opacity-100 group-hover/profile:scale-[1.04] transition-all duration-500 ease-out z-0"></div>
               
-              <div className="relative z-10 w-full h-full rounded-[36px] overflow-hidden border border-white/10 shadow-xl">
-                <img
-                  alt="Joshua Blessing Portrait Profile"
-                  className="w-full h-full object-cover filter brightness-[0.93] contrast-[1.02]"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2HxdExWqCFV6xYDKe_avj19SEuMOAJvfF-bPzxlZH7a1sdY2rrlF73JKkHzSkVw5TQNY_GvsC1GPgLykCxJo7uIumU2x1B-NbvldeNBT24dytZJ2Zoq2STMAWRDJ_m0_vLZzIXXPz--Odz7pXMKSehquK8Z6MT54beLje6oNMlfuS-AByKp3r5TDu2YsUR4_m_F7z2mf5FaipS4cOt2vRn0EoZfp9SNWf5h__CYEOypGtlDjInay82rhu02MJgeUqsgcax-lvYB1H"
-                />
+              {/* Thin Glowing Outline Contour Wrapper - Grows brighter on hover */}
+              <div className="absolute -inset-[1px] bg-gradient-to-tr from-white/10 via-pink-500/20 to-violet-500/30 rounded-[38px] group-hover/profile:from-pink-500/55 group-hover/profile:to-violet-500/55 transition-all duration-500 ease-out z-10"></div>
+              
+              {/* Frosted Glass Card Container */}
+              <div className="relative z-20 w-full h-full bg-white/[0.04] backdrop-blur-xl rounded-[38px] border border-white/10 p-3 shadow-2xl flex items-center justify-center transform group-hover/profile:-translate-y-2 group-hover/profile:scale-[1.01] transition-all duration-500 ease-out">
+                {/* Image Frame Container */}
+                <div 
+                  onClick={handleAvatarClick}
+                  className="w-full h-full rounded-[28px] overflow-hidden bg-black/30 border border-white/5 relative cursor-pointer group/image"
+                  title="Click to upload headshot nw.jpeg exactly"
+                >
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                  <img
+                    alt="Blessing Joshua Portrait Profile"
+                    className="w-full h-full object-cover group-hover/profile:scale-[1.04] group-hover/image:scale-[1.05] transition-all duration-500 ease-out"
+                    src={imgSrc}
+                    referrerPolicy="no-referrer"
+                  />
+                  {/* Subtle glass reflection overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/10 pointer-events-none group-hover/image:from-black/40 transition-all duration-500"></div>
+                  {/* Elegant overlay on image hover to prompt uploader */}
+                  <div className="absolute inset-0 bg-black/55 opacity-0 group-hover/image:opacity-100 flex flex-col items-center justify-center gap-1.5 transition-opacity duration-300">
+                    <Camera className="w-6 h-6 text-pink-300" />
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#e493b3]">Upload exact photo</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Absolute glowing back drop */}
-              <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-rose-500 rounded-full blur-3xl opacity-30"></div>
+              {/* Infinite glowing accent dot */}
+              <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-pink-500/20 rounded-full blur-2xl z-0 group-hover/profile:bg-pink-500/30 transition-all duration-500"></div>
             </div>
           </div>
         </div>
@@ -191,7 +267,7 @@ export default function HomeView({ setTab }: HomeViewProps) {
         
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 relative z-10">
           <div className="md:col-span-4 text-left space-y-3">
-            <span className="block text-xs font-bold uppercase tracking-widest text-[#e493b3]">About Joshua</span>
+            <span className="block text-xs font-bold uppercase tracking-widest text-[#e493b3]">About Blessing</span>
             <h2 className="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight leading-tight">
               My Creative &amp; Support Philosophy
             </h2>
@@ -263,7 +339,26 @@ export default function HomeView({ setTab }: HomeViewProps) {
         </h3>
         
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
-          {/* Bento Block 1 */}
+          {/* Bento Block 1 - Zahar Global Showcase */}
+          <div className="md:col-span-12 bg-gradient-to-tr from-[#151124] to-[#0c0a12] border border-white/5 rounded-3xl p-6 text-left flex flex-col justify-between overflow-hidden relative group/bento shadow-2xl">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-pink-500/5 rounded-full blur-3xl pointer-events-none"></div>
+            <div className="space-y-2 relative z-10">
+              <span className="text-[10px] font-bold text-[#e493b3] uppercase tracking-widest">Brand Showcase &amp; Agro Logistics</span>
+              <h4 className="font-sans font-bold text-lg text-white">Zahar Global B2B Sourcing Platform</h4>
+              <p className="text-xs text-slate-400 max-w-2xl">High-trust corporate presence showcasing premium West African agricultural export products (shrimp, crayfish, ogbono, etc.) and global air/freight logistics grids.</p>
+            </div>
+            
+            <div className="mt-6 border border-white/10 rounded-2xl overflow-hidden aspect-[16/7] md:aspect-[21/9] shadow-2xl bg-[#0c0a12] relative">
+              <img 
+                alt="Zahar Global export portal interface design mockup shot" 
+                src={zaharGlobalMockup}
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover group-hover/bento:scale-[1.01] transition-transform duration-500 ease-out"
+              />
+            </div>
+          </div>
+
+          {/* Bento Block 2 */}
           <div className="md:col-span-12 lg:col-span-8 bg-[#13111c]/80 border border-white/5 rounded-3xl p-6 text-left flex flex-col justify-between overflow-hidden relative">
             <div className="space-y-2 relative z-10">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Case Study Mockup Overview</span>
@@ -274,14 +369,14 @@ export default function HomeView({ setTab }: HomeViewProps) {
             <div className="mt-6 border border-white/10 rounded-2xl overflow-hidden aspect-[16/9] shadow-inner bg-[#0c0a12]">
               <img 
                 alt="Product curation specs mockup layout screenshot" 
-                src="/src/assets/images/ab_prime_mockup_1780061686438.png"
+                src={abPrimeMockup}
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover hover:scale-[1.02] transition-transform duration-300"
               />
             </div>
           </div>
 
-          {/* Bento Block 2 */}
+          {/* Bento Block 3 */}
           <div className="md:col-span-12 lg:col-span-4 bg-gradient-to-br from-pink-500/10 via-transparent to-transparent border border-white/5 rounded-3xl p-6 text-left flex flex-col justify-between relative">
             <div className="space-y-2">
               <span className="text-[10px] font-bold text-[#e493b3] uppercase tracking-widest">Fintech Design Clarity</span>
@@ -292,7 +387,7 @@ export default function HomeView({ setTab }: HomeViewProps) {
             <div className="mt-6 border border-white/15 rounded-2xl overflow-hidden aspect-[4/3] bg-[#0c0a12] shadow-xl">
               <img 
                 alt="NaijaStable Mobile Mockup UI screenshot snippet" 
-                src="/src/assets/images/naijastable_oga_mockup_1780062604140.png"
+                src={naijastableOgaMockup}
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover hover:scale-[1.03] transition-transform duration-300"
               />

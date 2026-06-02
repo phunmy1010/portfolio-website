@@ -26,7 +26,7 @@ export default function ContactView({ setTab }: ContactViewProps) {
     {
       id: "init",
       sender: "ai",
-      text: "Hello! I am Joshua's AI Representative Twin. Let's discuss her visual portfolio, project hosting, virtual assistance schedules, Canva asset design, or custom no-code setups. What kind of business support are you looking for?",
+      text: "Hello! I am Blessing's AI Representative Twin. Let's discuss her visual portfolio, project hosting, virtual assistance schedules, Canva asset design, or custom no-code setups. What kind of business support are you looking for?",
       timestamp: new Date(),
     },
   ]);
@@ -77,7 +77,7 @@ export default function ContactView({ setTab }: ContactViewProps) {
       const aiMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         sender: "ai",
-        text: data.text || "I am experiencing a momentary lag, but Joshua would love to talk service! Please reach out to her corporate email directly at Mira4diva@gmail.com.",
+        text: data.text || "I am experiencing a momentary lag, but Blessing would love to talk service! Please reach out to her corporate email directly at Mira4diva@gmail.com.",
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, aiMsg]);
@@ -86,7 +86,7 @@ export default function ContactView({ setTab }: ContactViewProps) {
       const aiErrorMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         sender: "ai",
-        text: "I am offline right now, but feel free to review Joshua's Case Studies, or drop her a mail at Mira4diva@gmail.com!",
+        text: "I am offline right now, but feel free to review Blessing's Case Studies, or drop her a mail at Mira4diva@gmail.com!",
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, aiErrorMsg]);
@@ -236,7 +236,7 @@ export default function ContactView({ setTab }: ContactViewProps) {
               <Sparkles className="w-5 h-5 animate-pulse" />
             </div>
             <div className="text-left">
-              <h3 className="font-sans font-bold text-sm text-white">Joshua’s AI Twin</h3>
+              <h3 className="font-sans font-bold text-sm text-white">Blessing’s AI Twin</h3>
               <p className="text-[10px] text-slate-400">Instant responses regarding services, design, &amp; rates</p>
             </div>
           </div>

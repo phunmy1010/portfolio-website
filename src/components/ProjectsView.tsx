@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import naijastableOgaMockup from "../assets/images/naijastable_oga_mockup_1780062604140.png";
+import abPrimeMockup from "../assets/images/ab_prime_mockup_1780061686438.png";
+import horizonSalonMockup from "../assets/images/horizon_salon_desktop_mockup_1780394945145.png";
+import jumiaRedesignMockup from "../assets/images/jumia_redesign_mockup_1780062186739.png";
+import zaharGlobalMockup from "../assets/images/zahar_global_desktop_mockup_1780393387483.png";
 import { 
   ArrowLeft, 
   ArrowUpRight, 
@@ -37,10 +42,28 @@ interface CaseStudy {
 
 const ALL_PROJECTS: CaseStudy[] = [
   {
+    id: "zahar-global",
+    category: "Web Platform",
+    year: "2024",
+    imageUrl: zaharGlobalMockup,
+    title: "Zahar Global Export Portal",
+    role: "UX/UI Lead Designer",
+    tags: ["ONE STOP AFRICAN FOOD SHOP", "EXPORT LOGISTICS", "BRAND IDENTITY"],
+    description: "A premium corporate presence and export logistics platform for Zahar Global, enabling streamlined foods sourcing and international distribution of African staples.",
+    challenge: "Accessing high-trust, authentic West African food staples (e.g. Dry Shrimp, Ogbono, Dry Catfish) was highly disjointed for diaspora buyers, lacking compliant bulk sourcing channels and transport trust.",
+    solution: "Designed a clean, high-contrast B2B portal featuring dedicated staple catalogs, request quotation systems, and highly transparent Air, Bulk & Last-Mile infrastructure grids.",
+    tools: ["Figma Wireframes", "Tailwind CSS Layouts", "Canva Packaging Specs", "Visual Brand Strategy"],
+    detailsHtml: {
+      overview: "Zahar Global serves as a premium logistics and sourcing portal connecting West African agricultural suppliers directly to B2B food retailers, wholesalers, and consumers in North America and Europe.",
+      discovery: "User analysis proved that food import coordinators prioritize standardized packaging, freshness benchmarks, and strict customs compliance metrics above simple digital shopping convenience.",
+      results: "Launched a highly tailored logistics framework with instant catalogs, boosting professional inquiries and landing solid client relationships with diaspora wholesale networks."
+    }
+  },
+  {
     id: "naija-stable",
     category: "No-Code Build",
     year: "2024",
-    imageUrl: "/src/assets/images/naijastable_oga_mockup_1780062604140.png",
+    imageUrl: naijastableOgaMockup,
     title: "NaijaStable Wallet",
     role: "UX/UI Lead Researcher",
     tags: ["FINTECH", "ACCESSIBILITY", "LOCALIZATION"],
@@ -58,7 +81,7 @@ const ALL_PROJECTS: CaseStudy[] = [
     id: "ab-prime",
     category: "Web Platform",
     year: "2024",
-    imageUrl: "/src/assets/images/ab_prime_mockup_1780061686438.png",
+    imageUrl: abPrimeMockup,
     title: "AB PRIME MOBILE COMMUNICATION LTD",
     role: "No-Code Designer",
     tags: ["ECOMMERCE", "PRODUCT SERVICES", "WEB PLATFORM"],
@@ -76,7 +99,7 @@ const ALL_PROJECTS: CaseStudy[] = [
     id: "horizon-salon",
     category: "Web Platform",
     year: "2024",
-    imageUrl: "/src/assets/images/horizon_salon_mockup_1780062011526.png",
+    imageUrl: horizonSalonMockup,
     title: "Horizon Unisex Salon Portal",
     role: "UX/UI Lead Researcher",
     tags: ["LOCAL SERVICES", "BOOKING FLOW", "BRAND IDENTITY"],
@@ -94,7 +117,7 @@ const ALL_PROJECTS: CaseStudy[] = [
     id: "jumia-redesign",
     category: "UX Case Study",
     year: "2023",
-    imageUrl: "/src/assets/images/jumia_redesign_mockup_1780062186739.png",
+    imageUrl: jumiaRedesignMockup,
     title: "Jumia App UX Redesign",
     role: "UX Researcher",
     tags: ["UX OVERHAUL", "CHECKOUT FLOW", "CONVERSION OPTIMIZATION"],
@@ -141,7 +164,7 @@ export default function ProjectsView({ setTab }: ProjectsViewProps) {
           Craft &amp; Execution
         </h1>
         <p className="font-sans text-xs sm:text-base text-slate-300 leading-relaxed max-w-xl">
-          Here are deep dives into four real design and product operations. Beautiful aesthetic layouts engineered with deliberate research, high responsive utility, and real Nigerian creative excellence.
+          Here are deep dives into five real design and product operations. Beautiful aesthetic layouts engineered with deliberate research, high responsive utility, and real Nigerian creative excellence.
         </p>
       </div>
 

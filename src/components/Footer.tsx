@@ -10,7 +10,7 @@ export default function Footer({ setTab }: FooterProps) {
       <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
         {/* Brand column */}
         <div className="flex flex-col gap-3">
-          <span className="font-serif text-2xl font-bold bg-gradient-to-r from-pink-300 via-rose-200 to-amber-200 bg-clip-text text-transparent">Joshua.B</span>
+          <span className="font-serif text-2xl font-bold bg-gradient-to-r from-pink-300 via-rose-200 to-amber-200 bg-clip-text text-transparent">Blessing.J</span>
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-sm font-sans">
             Benin City-based virtual tech specialist and UI/UX designer. Bridging aesthetics, rapid organization, and no-code operations for fast-growing global brands.
           </p>
@@ -90,7 +90,7 @@ export default function Footer({ setTab }: FooterProps) {
       </div>
 
       <div className="max-w-5xl mx-auto border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-        <p>© {new Date().getFullYear()} Joshua Blessing. Built for global operational success.</p>
+        <p>© {new Date().getFullYear()} Blessing Joshua. Built for global operational success.</p>
         <p className="font-mono text-[9px] text-[#e493b3]/50 flex items-center gap-1">
           <span>Executed with Passion &amp; Elegance</span>
           <Heart className="w-2.5 h-2.5 text-rose-400 fill-rose-400/20" />

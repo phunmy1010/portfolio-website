@@ -1,4 +1,6 @@
-import { Sparkles, MessageSquare } from "lucide-react";
+import { Sparkles, MessageSquare, Camera } from "lucide-react";
+import blessingProfileImg from "../assets/images/blessing_profile_portrait.png";
+import { useRef, useState, useEffect, ChangeEvent } from "react";
 
 interface HeaderProps {
   currentTab: "home" | "projects" | "contact";
@@ -6,14 +8,63 @@ interface HeaderProps {
 }
 
 export default function Header({ currentTab, setTab }: HeaderProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [imgSrc, setImgSrc] = useState(`${blessingProfileImg}?v=${Date.now()}`);
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setImgSrc(`${blessingProfileImg}?v=${Date.now()}`);
+    };
+    window.addEventListener("profile-picture-updated", handleUpdate);
+    return () => {
+      window.removeEventListener("profile-picture-updated", handleUpdate);
+    };
+  }, []);
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const response = await fetch("/api/upload-headshot", {
+        method: "POST",
+        headers: {
+          "Content-Type": file.type || "image/jpeg",
+        },
+        body: arrayBuffer,
+      });
+
+      if (response.ok) {
+        window.dispatchEvent(new Event("profile-picture-updated"));
+      } else {
+        alert("Failed to upload image. Please try again with a valid image file.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error uploading image file.");
+    }
+  };
+
   return (
     <header className="fixed top-0 left-0 right-0 z-[100] bg-[#0c0a12]/85 backdrop-blur-md px-6 py-4 flex justify-between items-center border-b border-white/5 shadow-lg">
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept="image/*"
+        className="hidden"
+      />
       <button 
         onClick={() => setTab("home")} 
         className="font-serif text-2xl font-bold tracking-tight bg-gradient-to-r from-pink-300 via-rose-200 to-amber-200 bg-clip-text text-transparent hover:opacity-90 transition-opacity cursor-pointer flex items-center gap-2"
         id="header-brand"
       >
-        <span>Joshua.B</span>
+        <span>Blessing.J</span>
       </button>
 
       <div className="flex items-center gap-4">
@@ -61,12 +112,21 @@ export default function Header({ currentTab, setTab }: HeaderProps) {
             <span>Chat AI</span>
           </button>
 
-          <div className="w-9 h-9 rounded-full overflow-hidden border border-rose-400/20 shadow-inner">
+          <div 
+            onClick={handleAvatarClick}
+            className="w-9 h-9 rounded-full overflow-hidden border border-rose-400/20 shadow-inner group relative cursor-pointer"
+            title="Click to upload headshot nw.jpeg exactly"
+          >
             <img
-              alt="Joshua Blessing Headshot"
-              className="w-full h-full object-cover"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2HxdExWqCFV6xYDKe_avj19SEuMOAJvfF-bPzxlZH7a1sdY2rrlF73JKkHzSkVw5TQNY_GvsC1GPgLykCxJo7uIumU2x1B-NbvldeNBT24dytZJ2Zoq2STMAWRDJ_m0_vLZzIXXPz--Odz7pXMKSehquK8Z6MT54beLje6oNMlfuS-AByKp3r5TDu2YsUR4_m_F7z2mf5FaipS4cOt2vRn0EoZfp9SNWf5h__CYEOypGtlDjInay82rhu02MJgeUqsgcax-lvYB1H"
+              alt="Blessing Joshua Headshot"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              src={imgSrc}
+              referrerPolicy="no-referrer"
             />
+            {/* Elegant hover camera overlay */}
+            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
+              <Camera className="w-3.5 h-3.5 text-white/90" />
+            </div>
           </div>
         </div>
       </div>
