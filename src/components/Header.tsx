@@ -1,5 +1,5 @@
 import { Sparkles, MessageSquare } from "lucide-react";
-import blessingProfileImg from "../assets/images/headshot_nw.jpeg";
+import blessingProfileImg from "../assets/images/headshot_nw.jpeg.jpg";
 
 interface HeaderProps {
   currentTab: "home" | "projects" | "contact";
