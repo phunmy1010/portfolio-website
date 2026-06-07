@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "motion/react";
-import blessingProfileImg from "../assets/images/headshot_nw.jpeg";
+import blessingProfileImg from "../assets/images/headshot_nw.jpeg.jpg";
 import primeCommunicationFlyer from "../assets/images/prime_communication_flyer_1780063457775.png";
 import horizonSalonMockup from "../assets/images/horizon_salon_desktop_mockup_1780394945145.png";
 import abPrimeMockup from "../assets/images/ab_prime_mockup_1780061686438.png";
