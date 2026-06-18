@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BrightMind NG</title>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#0f172a"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<style>
+  :root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface2: #263045;
+    --border: #334155;
+    --accent: #6366f1;
+    --accent2: #22d3ee;
+    --accent3: #f59e0b;
+    --green: #10b981;
+    --red: #ef4444;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
+
+  /* NAV */
+  .nav { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+  .nav-tab { flex: 1; padding: 14px 8px; text-align: center; font-size: 12px; font-weight: 600; color: var(--muted); border: none; background: none; cursor: pointer; transition: color .2s; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .nav-tab.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+  .nav-tab span { font-size: 20px; }
+
+  /* SCREENS */
+  .screen { display: none; padding: 16px; max-width: 700px; margin: 0 auto; }
+  .screen.active { display: block; }
+
+  /* HOME */
+  .hero { text-align: center; padding: 32px 16px 24px; }
+  .hero h1 { font-size: 28px; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero p { color: var(--muted); margin-top: 8px; font-size: 15px; }
+  .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+  .home-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 16px; text-align: center; cursor: pointer; transition: border-color .2s, transform .1s; }
+  .home-card:active { transform: scale(.97); }
+  .home-card:hover { border-color: var(--accent); }
+  .home-card .icon { font-size: 36px; margin-bottom: 10px; }
+  .home-card h3 { font-size: 15px; font-weight: 700; }
+  .home-card p { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .stars-bar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-top: 16px; display: flex; align-items: center; gap: 10px; }
+  .stars-bar .star-count { font-size: 22px; font-weight: 800; color: var(--accent3); }
+  .stars-bar p { font-size: 13px; color: var(--muted); }
+
+  /* BACK BUTTON */
+  .back-btn { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 14px; font-weight: 600; color: var(--text); cursor: pointer; margin-bottom: 16px; width: fit-content; }
+  .back-btn:active { opacity: .7; }
+
+  /* SECTION HEADER */
+  .section-header { margin-bottom: 16px; }
+  .section-header h2 { font-size: 22px; font-weight: 800; }
+  .section-header p { color: var(--muted); font-size: 14px; margin-top: 4px; }
+
+  /* STORIES */
+  .story-list { display: flex; flex-direction: column; gap: 10px; }
+  .story-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; cursor: pointer; display: flex; align-items: center; gap: 14px; transition: border-color .2s; }
+  .story-card:hover { border-color: var(--accent2); }
+  .story-card .s-icon { font-size: 28px; flex-shrink: 0; }
+  .story-card h3 { font-size: 15px; font-weight: 700; }
+  .story-card p { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+  /* STORY READER */
+  .story-reader { background: var(--surface); border-radius: var(--radius); padding: 24px; line-height: 1.8; }
+  .story-reader h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; color: var(--accent2); }
+  .story-reader .story-meta { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+  .story-reader p { font-size: 15px; margin-bottom: 14px; color: #cbd5e1; }
+  .story-reader .moral { background: var(--surface2); border-left: 3px solid var(--accent3); border-radius: 8px; padding: 14px; margin-top: 20px; font-size: 14px; color: var(--accent3); }
+  .earn-star-btn { width: 100%; margin-top: 16px; padding: 14px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border: none; border-radius: var(--radius); font-size: 16px; font-weight: 700; color: white; cursor: pointer; }
+
+  /* PHONICS */
+  .alpha-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .alpha-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 8px; text-align: center; cursor: pointer; transition: border-color .2s; }
+  .alpha-card:hover { border-color: var(--accent); }
+  .alpha-card .letter { font-size: 28px; font-weight: 900; color: var(--accent); }
+  .alpha-card .sound { font-size: 11px; color: var(--muted); }
+  .phonics-detail { background: var(--surface); border-radius: var(--radius); padding: 24px; text-align: center; }
+  .phonics-detail .big-letter { font-size: 80px; font-weight: 900; color: var(--accent); }
+  .phonics-detail h3 { font-size: 18px; color: var(--accent2); margin: 8px 0 4px; }
+  .phonics-detail p { color: var(--muted); font-size: 14px; }
+  .phonics-detail .examples { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 16px; }
+  .phonics-detail .ex-tag { background: var(--surface2); border-radius: 8px; padding: 6px 12px; font-size: 13px; }
+  .phonics-nav { display: flex; gap: 10px; margin-top: 16px; }
+  .phonics-nav button { flex: 1; padding: 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; font-size: 14px; font-weight: 600; color: var(--text); cursor: pointer; }
+
+  /* QUIZ & MATHS */
+  .topic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .topic-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-align: center; cursor: pointer; transition: border-color .2s; }
+  .topic-card:hover { border-color: var(--accent); }
+  .topic-card .t-icon { font-size: 30px; margin-bottom: 8px; }
+  .topic-card h3 { font-size: 14px; font-weight: 700; }
+  .q-box { background: var(--surface); border-radius: var(--radius); padding: 24px; }
+  .q-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .q-header .q-num { font-size: 13px; color: var(--muted); }
+  .q-header .q-score { font-size: 13px; color: var(--accent3); font-weight: 700; }
+  .q-progress { height: 4px; background: var(--border); border-radius: 4px; margin-bottom: 24px; overflow: hidden; }
+  .q-progress-bar { height: 100%; background: var(--accent); border-radius: 4px; transition: width .3s; }
+  .timer-bar { height: 4px; background: var(--border); border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+  .timer-bar-inner { height: 100%; background: var(--green); border-radius: 4px; transition: width 1s linear; }
+  .q-text { font-size: 18px; font-weight: 700; margin-bottom: 20px; line-height: 1.5; }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; text-align: left; font-size: 14px; font-weight: 600; color: var(--text); cursor: pointer; transition: border-color .15s, background .15s; }
+  .option-btn:hover:not(:disabled) { border-color: var(--accent); }
+  .option-btn.correct { background: #064e3b; border-color: var(--green); }
+  .option-btn.wrong { background: #450a0a; border-color: var(--red); }
+  .feedback { margin-top: 14px; padding: 12px; border-radius: 10px; font-size: 14px; line-height: 1.5; }
+  .feedback.correct { background: #064e3b; color: var(--green); }
+  .feedback.wrong { background: #450a0a; color: #fca5a5; }
+  .next-btn { width: 100%; margin-top: 14px; padding: 14px; background: var(--accent); border: none; border-radius: 12px; font-size: 15px; font-weight: 700; color: white; cursor: pointer; }
+  .result-box { background: var(--surface); border-radius: var(--radius); padding: 32px 24px; text-align: center; }
+  .result-box .big-score { font-size: 64px; font-weight: 900; color: var(--accent); }
+  .result-box .grade { font-size: 20px; font-weight: 700; margin-top: 4px; }
+  .result-box p { color: var(--muted); font-size: 14px; margin-top: 8px; }
+  .result-btns { display: flex; gap: 10px; margin-top: 24px; }
+  .result-btns button { flex: 1; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; border: none; }
+  .btn-retry { background: var(--accent); color: white; }
+  .btn-home { background: var(--surface2); color: var(--text); border: 1px solid var(--border) !important; }
+
+  /* EXAM */
+  .exam-grid { display: flex; flex-direction: column; gap: 12px; }
+  .exam-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; cursor: pointer; display: flex; align-items: center; gap: 14px; transition: border-color .2s; }
+  .exam-card:hover { border-color: var(--accent); }
+  .exam-card .e-icon { font-size: 32px; flex-shrink: 0; }
+  .exam-card h3 { font-size: 16px; font-weight: 800; }
+  .exam-card p { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .badge { display: inline-block; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; background: var(--accent); color: white; margin-top: 6px; }
+  .subject-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .subject-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 12px; text-align: center; cursor: pointer; transition: border-color .2s; }
+  .subject-card:hover { border-color: var(--accent); }
+  .subject-card .subj-icon { font-size: 26px; margin-bottom: 6px; }
+  .subject-card h4 { font-size: 13px; font-weight: 700; }
+  .mode-select { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+  .mode-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer; text-align: left; transition: border-color .2s; }
+  .mode-btn:hover { border-color: var(--accent); }
+  .mode-btn h4 { font-size: 15px; font-weight: 700; color: var(--text); }
+  .mode-btn p { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .review-item { background: var(--surface); border-radius: 12px; padding: 16px; margin-bottom: 10px; border-left: 3px solid var(--border); }
+  .review-item.correct-r { border-color: var(--green); }
+  .review-item.wrong-r { border-color: var(--red); }
+  .review-item .r-q { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .review-item .r-ans { font-size: 13px; }
+  .install-btn { display: none; position: fixed; bottom: 80px; right: 16px; background: var(--accent); border: none; border-radius: 50px; padding: 12px 20px; font-size: 14px; font-weight: 700; color: white; cursor: pointer; z-index: 200; box-shadow: 0 4px 20px rgba(99,102,241,.4); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-tab active" onclick="showSection('home')" id="tab-home">
+    <span>🏠</span>Home
+  </button>
+  <button class="nav-tab" onclick="showSection('stories')" id="tab-stories">
+    <span>📖</span>Stories
+  </button>
+  <button class="nav-tab" onclick="showSection('phonics')" id="tab-phonics">
+    <span>🔤</span>Phonics
+  </button>
+  <button class="nav-tab" onclick="showSection('maths')" id="tab-maths">
+    <span>🔢</span>Maths
+  </button>
+  <button class="nav-tab" onclick="showSection('quiz')" id="tab-quiz">
+    <span>🧠</span>Quiz
+  </button>
+  <button class="nav-tab" onclick="showSection('exam')" id="tab-exam">
+    <span>🎓</span>Exams
+  </button>
+</nav>
+
+<button class="install-btn" id="installBtn" onclick="installApp()">📲 Install App</button>
+
+<!-- ===== HOME ===== -->
+<div class="screen active" id="screen-home">
+  <div class="hero">
+    <h1>BrightMind NG 🇳🇬</h1>
+    <p>Learn, read, and ace your exams</p>
+  </div>
+  <div class="stars-bar">
+    <div class="star-count">⭐ <span id="home-stars">0</span></div>
+    <div><p style="font-size:14px;font-weight:700;">Your Stars</p><p>Keep learning to earn more!</p></div>
+  </div>
+  <div class="card-grid" style="margin-top:16px;">
+    <div class="home-card" onclick="showSection('stories')">
+      <div class="icon">📖</div>
+      <h3>Stories</h3>
+      <p>20 Nigerian tales</p>
+    </div>
+    <div class="home-card" onclick="showSection('phonics')">
+      <div class="icon">🔤</div>
+      <h3>Phonics</h3>
+      <p>A–Z sounds</p>
+    </div>
+    <div class="home-card" onclick="showSection('maths')">
+      <div class="icon">🔢</div>
+      <h3>Maths</h3>
+      <p>3 difficulty levels</p>
+    </div>
+    <div class="home-card" onclick="showSection('quiz')">
+      <div class="icon">🧠</div>
+      <h3>Quiz</h3>
+      <p>Animals, Science & more</p>
+    </div>
+  </div>
+  <div class="home-card" onclick="showSection('exam')" style="margin-top:12px;display:flex;align-items:center;gap:16px;text-align:left;">
+    <div style="font-size:40px;">🎓</div>
+    <div>
+      <h3 style="font-size:17px;">Exam Prep</h3>
+      <p>WAEC · NECO · JAMB · Post UTME</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STORIES ===== -->
+<div class="screen" id="screen-stories">
+  <!-- LIST VIEW -->
+  <div id="stories-list">
+    <div class="section-header">
+      <h2>📖 Nigerian Stories</h2>
+      <p>Read and earn stars</p>
+    </div>
+    <div class="story-list" id="story-cards"></div>
+  </div>
+  <!-- READER VIEW -->
+  <div id="story-reader" style="display:none;">
+    <button class="back-btn" onclick="closeStory()">← Back to Stories</button>
+    <div class="story-reader" id="story-content"></div>
+    <button class="earn-star-btn" id="star-btn" onclick="earnStoryStar()">⭐ Mark as Read (+1 Star)</button>
+  </div>
+</div>
+
+<!-- ===== PHONICS ===== -->
+<div class="screen" id="screen-phonics">
+  <div id="phonics-list">
+    <div class="section-header">
+      <h2>🔤 Phonics A–Z</h2>
+      <p>Tap a letter to learn its sound</p>
+    </div>
+    <div class="alpha-grid" id="alpha-grid"></div>
+  </div>
+  <div id="phonics-detail" style="display:none;">
+    <button class="back-btn" onclick="closePhonics()">← Back to Alphabet</button>
+    <div class="phonics-detail">
+      <div class="big-letter" id="ph-letter"></div>
+      <h3 id="ph-sound"></h3>
+      <p id="ph-desc"></p>
+      <div class="examples" id="ph-examples"></div>
+    </div>
+    <div class="phonics-nav">
+      <button onclick="prevLetter()">← Prev</button>
+      <button onclick="nextLetter()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MATHS ===== -->
+<div class="screen" id="screen-maths">
+  <div id="maths-home">
+    <div class="section-header">
+      <h2>🔢 Maths Practice</h2>
+      <p>Choose your level</p>
+    </div>
+    <div class="topic-grid">
+      <div class="topic-card" onclick="startMaths('easy')"><div class="t-icon">😊</div><h3>Easy</h3><p>Add & Subtract</p></div>
+      <div class="topic-card" onclick="startMaths('medium')"><div class="t-icon">😤</div><h3>Medium</h3><p>Multiply & Divide</p></div>
+      <div class="topic-card" onclick="startMaths('hard')"><div class="t-icon">🔥</div><h3>Hard</h3><p>Mixed</p></div>
+      <div class="topic-card" onclick="startMaths('word')"><div class="t-icon">📝</div><h3>Word Problems</h3><p>Nigerian scenarios</p></div>
+    </div>
+  </div>
+  <div id="maths-quiz" style="display:none;">
+    <button class="back-btn" onclick="exitMaths()">← Back to Levels</button>
+    <div class="q-box" id="maths-q-box"></div>
+  </div>
+</div>
+
+<!-- ===== QUIZ ===== -->
+<div class="screen" id="screen-quiz">
+  <div id="quiz-home">
+    <div class="section-header">
+      <h2>🧠 General Knowledge</h2>
+      <p>Choose a topic</p>
+    </div>
+    <div class="topic-grid" id="quiz-topics"></div>
+  </div>
+  <div id="quiz-play" style="display:none;">
+    <button class="back-btn" onclick="exitQuiz()">← Back to Topics</button>
+    <div class="q-box" id="quiz-q-box"></div>
+  </div>
+</div>
+
+<!-- ===== EXAM ===== -->
+<div class="screen" id="screen-exam">
+  <!-- EXAM HOME -->
+  <div id="exam-home">
+    <div class="section-header">
+      <h2>🎓 Exam Prep</h2>
+      <p>Select your exam to begin</p>
+    </div>
+    <div class="exam-grid">
+      <div class="exam-card" onclick="selectExam('waec')">
+        <div class="e-icon">📗</div>
+        <div><h3>WAEC</h3><p>West Africa Senior School Certificate</p><span class="badge">SS3</span></div>
+      </div>
+      <div class="exam-card" onclick="selectExam('neco')">
+        <div class="e-icon">📘</div>
+        <div><h3>NECO</h3><p>National Examination Council</p><span class="badge">SS3</span></div>
+      </div>
+      <div class="exam-card" onclick="selectExam('jamb')">
+        <div class="e-icon">📙</div>
+        <div><h3>JAMB / UTME</h3><p>Joint Admissions & Matriculation</p><span class="badge">100 Pts</span></div>
+      </div>
+      <div class="exam-card" onclick="selectExam('postutme')">
+        <div class="e-icon">🏫</div>
+        <div><h3>Post UTME</h3><p>University screening test</p><span class="badge">Uni</span></div>
+      </div>
+    </div>
+  </div>
+  <!-- SUBJECT SELECT -->
+  <div id="exam-subjects" style="display:none;">
+    <button class="back-btn" onclick="backToExams()">← Back to Exams</button>
+    <div class="section-header"><h2 id="exam-title">Subjects</h2><p>Choose a subject to practice</p></div>
+    <div class="subject-grid" id="subject-grid"></div>
+  </div>
+  <!-- MODE SELECT -->
+  <div id="exam-mode" style="display:none;">
+    <button class="back-btn" onclick="backToSubjects()">← Back to Subjects</button>
+    <div class="section-header"><h2 id="mode-title">Study Mode</h2><p>How do you want to study?</p></div>
+    <div class="mode-select">
+      <button class="mode-btn" onclick="startExam('practice')">
+        <h4>📝 Practice Mode</h4>
+        <p>See explanations after every answer. Great for learning.</p>
+      </button>
+      <button class="mode-btn" onclick="startExam('timed')">
+        <h4>⏱️ Timed Mock</h4>
+        <p>40 seconds per question. Exam conditions.</p>
+      </button>
+      <button class="mode-btn" onclick="startExam('marathon')">
+        <h4>🏃 Marathon</h4>
+        <p>Keep going until you get one wrong.</p>
+      </button>
+    </div>
+  </div>
+  <!-- EXAM QUIZ -->
+  <div id="exam-quiz" style="display:none;">
+    <button class="back-btn" onclick="exitExam()">← Exit Exam</button>
+    <div class="q-box" id="exam-q-box"></div>
+  </div>
+  <!-- EXAM RESULT -->
+  <div id="exam-result" style="display:none;">
+    <button class="back-btn" onclick="backToExams()">← Back to Exams</button>
+    <div class="result-box">
+      <div class="big-score" id="exam-score"></div>
+      <div class="grade" id="exam-grade"></div>
+      <p id="exam-result-msg"></p>
+      <div class="result-btns">
+        <button class="btn-retry" onclick="retryExam()">🔄 Retry</button>
+        <button class="btn-home" onclick="viewReview()">📋 Review</button>
+      </div>
+    </div>
+    <div id="exam-review" style="display:none;margin-top:16px;"></div>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+let stars = parseInt(localStorage.getItem('brightmind_stars')||'0');
+let readStories = JSON.parse(localStorage.getItem('brightmind_read')||'[]');
+let currentPhonicsIdx = 0;
+let currentStoryIdx = -1;
+let mathsState = {};
+let quizState = {};
+let examState = {};
+
+function saveStars(){ localStorage.setItem('brightmind_stars', stars); document.getElementById('home-stars').textContent = stars; }
+saveStars();
+
+// ===== NAV =====
+function showSection(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+// ===== STORIES =====
+const stories = [
+  { icon:'🥘', title:"Mama's Jollof Secret", location:"Lagos Island", lesson:"Sharing is the sweetest spice",
+    text:`In the busy streets of Lagos Island, there lived a woman named Mama Titi who made the most delicious jollof rice anyone had ever tasted. People came from Surulere, from Lekki, even from Abuja just to eat at her little buka near the market.\n\nOne day, her daughter Titi begged her: "Mama, what is your secret? Every time I cook jollof rice at home it doesn't taste the same!"\n\nMama Titi smiled and pointed to the big pot bubbling on firewood. "Titi my dear, the secret is not in the tomatoes or the pepper or the palm oil. The secret is that I cook with joy and I share with love. Every morning I wake up grateful, and that gratitude goes into my pot."\n\nTiti did not fully understand until one afternoon when she cooked rice for her neighbors whose gas had finished. She cooked singing, she cooked laughing, she cooked thinking of how happy they would be. And that evening, her neighbors said it was the best rice they had ever tasted.\n\nTiti ran to her mother. "Mama! Mama! I finally understand!"\n\nMama Titi clapped her hands and laughed till tears ran down her face.` },
+  { icon:'🦅', title:"The Eagle of Aso Rock", location:"Abuja", lesson:"Leadership means serving others, not yourself",
+    text:`High above Aso Rock in Abuja, there lived a great eagle named Udo. All the birds of the Federal Capital Territory looked up to him because his wings were the widest and his eyes could see the farthest.\n\nOne dry season, the rains did not come. The River Niger ran low. The birds grew hungry and thirsty.\n\nThe smaller birds came to Udo. "Great eagle, use your powerful wings to fly to the clouds and bring rain!"\n\nUdo spread his mighty wings. He did not fly to show off his power — he flew for days, soaring higher than any bird had ever gone, carrying a prayer on behalf of all the birds below.\n\nWhen the rains finally came, the birds celebrated. But they noticed that Udo's feathers were worn and his body was tired. He had given everything.\n\n"Why did you work so hard?" the little sparrow asked. "You could have stayed comfortable on your rock."\n\n"A leader who stays comfortable while his people suffer," said Udo, "is not a leader. He is just a bird with a big rock."` },
+  { icon:'🌳', title:"The Iroko Tree's Wisdom", location:"Abeokuta", lesson:"True wisdom comes from listening more than speaking",
+    text:`In the ancient city of Abeokuta, where the rocks rise like sleeping giants, there grew a great Iroko tree older than any man's grandfather's grandfather. The people called it Igi Ogbon — the Tree of Wisdom.\n\nA young man named Akin came to sit beneath it every day, talking and talking about how wise he was. He told the tree about his plans, his ideas, his arguments with neighbors. The Iroko tree said nothing.\n\nOne day Akin asked, "Tree, why do you never speak? I have told you everything. Surely you must have something to say!"\n\nThe tree swayed gently in the breeze. Then an old woman who was passing by stopped and said: "Young man, this tree has been listening to the wind, the rain, the animals, and the people of this town for three hundred years. It has learned everything by listening. It does not need to speak because it already knows."\n\nAkin fell silent — for the first time in his life. And in that silence, he heard a bird sing, a child laugh far away, and the deep breathing of the town around him.\n\nThat was the beginning of his real wisdom.` },
+  { icon:'🎭', title:"The Egungun's Dance", location:"Ibadan", lesson:"Respect your ancestors and they will guide you",
+    text:`In the old quarters of Ibadan, during the festival of Egungun, the masquerades came out dressed in flowing colourful cloth. The whole town cleared the road and watched in awe.\n\nA young boy named Dayo was not afraid. Unlike the other children who ran, he stood and watched with wide eyes as the Egungun whirled and danced.\n\nHis grandmother grabbed his arm. "Dayo! You must show respect!"\n\n"But grandmother," Dayo whispered, "who is inside the costume?"\n\nHis grandmother knelt beside him. "Dayo, the Egungun carries the spirit of all who came before us — your great-grandfather who built the family house, his mother who survived the famines, all of them walking with us in this festival. They come to remind us that we are not alone."\n\nDayo looked at the Egungun differently now. He bowed his head. In that moment he felt something warm — like a hand on his shoulder from someone he could not see.\n\nHe never forgot that feeling for the rest of his life.` },
+  { icon:'🐊', title:"Chidi and the River Crocodile", location:"Niger Delta", lesson:"Respect nature and it will protect you",
+    text:`In the creeks of the Niger Delta, where the mangroves grow thick and the water is dark green, young Chidi went fishing against his father's warning.\n\n"Do not go to the bend in the river before sunrise," his father had said. "That is where old Oguta rests."\n\nBut Chidi wanted to catch the biggest fish, and he knew the biggest fish gathered at the bend. So he paddled out in the early morning darkness.\n\nThere, in the shadows, he saw two red eyes watching him. Old Oguta, the ancient crocodile, lay still as a log.\n\nChidi's paddle froze in his hand. His heart hammered.\n\nSlowly, carefully, he said: "Grandfather of the river, I come with respect. I will not disturb your rest. I only ask to fish at the edge of your territory."\n\nOguta blinked. Then he slowly turned and slid deeper into the water, leaving the edge of the bend for Chidi.\n\nChidi caught more fish that morning than he had ever caught in his life. And from that day, he always spoke to the river before he entered it.` },
+  { icon:'📚', title:"The Girl Who Read Everything", location:"Kano", lesson:"Knowledge opens every door",
+    text:`In the ancient walled city of Kano, where scholars had walked for centuries, there lived a girl named Aisha who loved books more than anything.\n\nHer brothers teased her. "Why do you read so much? You will only stay home and cook!"\n\nBut Aisha read everything — Arabic texts, Hausa stories, English novels, science magazines that her teacher brought from Lagos.\n\nOne year, a scholarship was announced for the best student in all of Kano State. The test was on history, science, mathematics, and literature. Every boy in the school prepared hard.\n\nOn the day of the results, the name called first was: Aisha.\n\nShe won the scholarship and went to study at Bayero University. She became a doctor. She came back to Kano and opened a hospital in her old neighborhood.\n\nYears later, when young girls said "What is the point of studying?" their mothers would say: "Did you hear of Aisha from Fagge? Go and read something."` },
+  { icon:'⚽', title:"Super Eagles Dream", location:"Oshodi, Lagos", lesson:"Discipline turns talent into greatness",
+    text:`Emeka grew up on the dusty pitches of Oshodi where boys played football from morning till the last ray of sun disappeared behind the motor park.\n\nHe was talented — everyone said so. But Emeka hated early morning training. He hated running laps. He only wanted to show skills.\n\nA scout from a Lagos academy came to watch the boys one afternoon. He watched for two hours. Then he pulled aside the coach.\n\n"That tall boy — number seven — he has skill. But the quiet boy in the red shirt, the one who never stops running even when the others rest — bring him to me."\n\nThe coach was surprised. "But sir, Emeka has more tricks—"\n\n"Tricks tire," said the scout. "Discipline wins trophies."\n\nThe quiet boy, whose name was Festus, went to the academy. He played for the Super Eagles fifteen years later.\n\nEmeka watched the match on a television in a barber shop in Oshodi. He was not bitter. He understood.` },
+  { icon:'🌺', title:"The Market Queen", location:"Onitsha", lesson:"Integrity is your greatest business asset",
+    text:`Onitsha Main Market is one of the largest in West Africa. In that ocean of trade, Mama Ogechukwu had a small stall selling fabric.\n\nPeople passed the big glamorous stalls to reach her small corner because Mama Ogechukwu never cheated. Every measurement was exact. Every fabric was what she said it was. If she made a mistake she corrected it — even if it cost her.\n\nOne day a buyer came and offered to buy all her stock — ten times the market price — if she would tell him her supplier's secret and help him drive her competitors out of business.\n\nMama Ogechukwu thanked him politely and said no.\n\n"Why?" he demanded. "You could become rich overnight!"\n\n"Because," she said, "the women who sell beside me have children like mine. And my reputation is my business. If I become rich by destroying others, what kind of wealth is that?"\n\nThe man left. He failed in the market within two years — because everyone knew he could not be trusted.\n\nMama Ogechukwu's stall grew three times its size.` },
+  { icon:'🥁', title:"The Talking Drum", location:"Oyo Empire", lesson:"Communication is the foundation of community",
+    text:`In the great Oyo Empire, before telephones and before radio, the dundun drum was the telephone of the people.\n\nA young drummer named Lanre was training under his grandfather to master the talking drum. The dundun could say words — greetings, warnings, announcements — across miles of forest and farmland.\n\nLanre was impatient. He wanted to play fast rhythms and show off to the girls in the village.\n\n"Grandfather," he said, "when can I play at festivals?"\n\nHis grandfather pressed the drum against his own armpit, squeezed slowly, and the drum said: *When you can say something worth hearing.*\n\nLanre blinked. He had understood the drum's words clearly.\n\nHe spent three more years learning not just how to hit the drum, but what to say with it, and when. He learned that a warning drum that cried wolf would be ignored when real danger came. He learned that a joyful celebration drum that played in grief would confuse people.\n\nThe message was only powerful if it was true.` },
+  { icon:'🌙', title:"Moonlight Tales in the Compound", location:"Somewhere in Yorubaland", lesson:"Stories keep a community's memory alive",
+    text:`In the old days, before Netflix and before generator noise, families gathered in the compound when the moon was full and the grandmother would tell stories.\n\nThe children sat on mats, the older ones carrying the smaller ones on their laps. And Mama Agba would begin: "Àló o!" And the children would shout back: "Àló!"\n\nShe told them about Tortoise's cleverness and how greed made him fall. She told them about the hunter who heard a human skull speak and made the mistake of telling others. She told them why the sun and moon no longer live together.\n\nYoung Taiwo listened hardest of all. Years later, when Mama Agba was gone, it was Taiwo who gathered her own grandchildren under the mango tree and began: "Àló o!"\n\nAnd the children shouted: "Àló!"\n\nThe story had found new mouths to live in.` },
+  { icon:'🐢', title:"The Tortoise and the Feast", location:"Traditional Yoruba", lesson:"Cleverness without integrity will always end badly",
+    text:`There was a great feast in the sky to which all birds were invited. Tortoise heard about it and wanted to go, but he had no wings.\n\nSo he went to each bird and persuaded them that they would need a spokesperson — someone clever to speak for them all at the feast. "That someone," said Tortoise, "should be me."\n\nThe birds agreed and each gave him one feather to make wings. Tortoise also told them: "When we reach the sky, we must each take a new name. My name shall be 'All of You.'"\n\nAt the feast, the sky people asked: "For whom is this food prepared?"\n\nTortoise stepped forward. "For All of You," he said.\n\nSo he ate everything. The birds went home hungry and angry. When Tortoise asked them to help him down (for he could not fly alone), they each took back their feather and left.\n\nTortoise fell.\n\nThat is why, they say, the tortoise's back has cracks to this day.` },
+  { icon:'💡', title:"Emeka Fixes NEPA", location:"Somewhere in Nigeria", lesson:"Resourcefulness turns problems into opportunities",
+    text:`"NEPA don take light again!" Emeka's little sister wailed as the fan slowed to a stop and the darkness swallowed the living room.\n\nThe neighbors groaned. The generator outside started with a cough and a cloud of smoke.\n\nBut fifteen-year-old Emeka picked up a book he had borrowed from school about solar energy. He had been reading it for three weeks.\n\nHe went to the market and with his savings bought one small solar panel, a battery, and some wire. He studied the diagrams in the book. He made mistakes. He tried again.\n\nThree weeks later, Emeka's family had light — small but steady — even when NEPA took the electricity.\n\nThe neighbors noticed. Mr. Adeyemi from next door came to look. Then Mrs. Okonkwo. Then the whole street was curious.\n\nBy the end of the year, Emeka had installed five small solar setups in his neighborhood. He was not rich yet, but he was on his way.` },
+  { icon:'🏺', title:"The Benin Bronze", location:"Benin City", lesson:"Your culture is your identity — protect it",
+    text:`In the Royal Museum of Benin City, young Osas stood before a photograph of a bronze head — a head that now sat in a museum in London, taken long ago during the British Punitive Expedition of 1897.\n\n"Why is our art in their museum?" Osas asked her uncle.\n\nHer uncle sighed. "Because they took it. But listen — the fact that they took it tells you something important. Those bronzes were so magnificent, so extraordinary, so far ahead of anything the world expected from Africa, that they could not pretend they had found nothing."\n\nOsas studied the photograph carefully — the detail on the collar, the dignified expression, the royal marks on the forehead.\n\n"We must get them back," she said.\n\n"Yes," her uncle said. "And in the meantime, we must make sure no one can make you ashamed of where they came from."` },
+  { icon:'🌊', title:"The Fisherman's Daughter", location:"Lagos Lagoon", lesson:"Courage to break tradition paves the way for others",
+    text:`On the Lagos lagoon, where the water shimmers silver at dawn, only men were fishermen. That was the rule — not a written rule, just the way things had always been.\n\nBut Ngozi had grown up watching her father's nets and she knew the tides, the fish, the seasons, better than any of her brothers.\n\nWhen her father fell ill, instead of waiting for a male relative to take over, Ngozi took the boat out herself, before sunrise, before anyone was awake to stop her.\n\nShe came back with the most fish the family had seen in a month.\n\nShe went out again the next morning. And the next.\n\nAfter three weeks, not a single person on the lagoon said a word against it.\n\nAfter one year, two other women in the community had boats.\n\nNgozi had not argued. She had not protested. She had simply done the thing, and done it well.` },
+  { icon:'🦋', title:"Bisi and the Butterfly Farm", location:"Ekiti State", lesson:"Small hands can do great work when they care about nature",
+    text:`Bisi lived in Ekiti where the hills are green and the air smells of red earth after rain. She was twelve years old and she noticed that butterflies were disappearing from her village.\n\nShe asked her science teacher why. He explained about habitat loss, about pesticides, about how the flowers the butterflies needed were being removed to make way for buildings.\n\nBisi went home and thought for a long time. Then she started planting.\n\nIn a corner of her compound, then in the school garden, then on the roadside, she planted the flowers and plants that butterflies need. She asked her neighbors to stop one particular pesticide. Most of them were surprised a child was asking but they listened.\n\nBy her second year in secondary school, butterflies had returned to her village in numbers no one had seen since their grandparents were young.\n\nA university professor came to study what she had done and wrote a paper about it.\n\nBisi was mentioned in the acknowledgements. She was fourteen.` },
+  { icon:'🏫', title:"The School Under the Mango Tree", location:"Idanre Hills", lesson:"Education finds a way",
+    text:`In a village tucked in the Idanre Hills, the school building collapsed in the rains. The government said a new one would come. They waited one year. Two years. Nothing came.\n\nThe teacher, Mr. Babatunde, set up class under the mango tree at the edge of the village. Benches came from abandoned buildings. The blackboard was a plank painted black.\n\nParents complained. "This is not a real school."\n\nBut the children came. Every morning they came, and Mr. Babatunde taught.\n\nThree years later, the students from that mango tree school sat the common entrance examination. They outperformed students from five nearby towns with proper buildings.\n\nA journalist heard the story and published it. Donations came. The new school was built.\n\nAt the opening ceremony, Mr. Babatunde said: "The building is beautiful. But remember — the learning happened under a tree."` },
+  { icon:'🧪', title:"Ada the Young Scientist", location:"Enugu", lesson:"Ask questions — that is how science begins",
+    text:`Ada was always asking questions that irritated adults.\n\nWhy does bitterleaf soup turn green when it's cooked? Why does the clay from the Oji River make better pots than the clay near their house? Why does pounded yam stretch but not break while eba breaks?\n\nHer parents said "Ada, just eat your food."\n\nHer teacher at Government Secondary School Enugu said something different. She said: "Ada, write these questions down. All of them. We will try to answer them one by one in the lab."\n\nThat year Ada entered the national science fair with a project on the chemical properties of different Igbo fermented foods. She did not win first place. She came second.\n\nBut the professor who judged the competition gave her his card and said: "When you are ready for university, contact me."\n\nAda kept that card for six years.` },
+  { icon:'🎨', title:"The Boy Who Painted Lagos", location:"Lagos", lesson:"Art is how a city sees itself",
+    text:`Kolade was seventeen and he painted walls.\n\nNot with permission — with spray cans, in the night, in places where people walked every day but never really looked.\n\nHe painted the women of Balogun market carrying basins on their heads with the grace of queens. He painted the okada riders weaving through traffic like birds. He painted an old man playing ayo under a streetlight.\n\nPeople started photographing the walls. Then a newspaper noticed.\n\nThe Lagos State government, who had originally wanted to fine him, invited him to paint the wall of a new community centre instead.\n\nKolade was surprised. He thought he would be in trouble.\n\n"Why are you doing this?" he asked the government official.\n\n"Because," the official said, looking at the wall of the market woman, "you painted something true about this city. And a city should see itself in its walls."` },
+  { icon:'🐘', title:"Elephant and the Pride of Yankari", location:"Bauchi", lesson:"Every creature has its place and purpose",
+    text:`In Yankari Game Reserve in Bauchi State, where the warm springs bubble up from the earth, the animals lived by a simple understanding: no creature was more important than another.\n\nBut one dry season, the young elephant Ike began to believe he was the most important animal because he was the biggest.\n\nHe pushed smaller animals away from the water. He trumpeted to scatter the birds. He knocked over the termite mounds just because he could.\n\nThe old tortoise found him one morning and looked up at him without fear.\n\n"Ike," said the tortoise, "last night while you slept, the bats ate the insects that would have given you river blindness. The birds cleaned the parasites from your skin. The termites aerate the soil that grows the grass you eat. What exactly did you do for us while you slept?"\n\nIke had no answer.\n\nHe was still the biggest. But he was never again the most important.` },
+  { icon:'👑', title:"The Last Princess of Zaria", location:"Zaria, Kaduna", lesson:"Leadership and courage know no gender",
+    text:`Five hundred years ago in the city of Zaria, a woman named Amina became queen. But unlike any queen before her, she did not sit on a throne and wait for reports.\n\nShe put on armour. She picked up a sword. She led her army.\n\nFor thirty years, Queen Amina of Zazzau expanded her kingdom, built walls around every city she conquered, and opened trade routes that brought prosperity to her people.\n\nCenturies later, a girl named Hadiza from Zaria learned about Queen Amina in school. When her uncle said "Women cannot be leaders," Hadiza opened her history textbook and pointed to the page with Amina's name.\n\n"Tell that to her," said Hadiza.\n\nHer uncle was quiet for a long time. Then he smiled.\n\n"Study hard," he said. "Zaria needs more daughters like her."` }
+];
+
+function renderStories(){
+  const c = document.getElementById('story-cards');
+  c.innerHTML = stories.map((s,i)=>`
+    <div class="story-card" onclick="openStory(${i})">
+      <div class="s-icon">${s.icon}</div>
+      <div>
+        <h3>${s.title} ${readStories.includes(i)?'⭐':''}</h3>
+        <p>${s.location}</p>
+      </div>
+    </div>`).join('');
+}
+renderStories();
+
+function openStory(i){
+  currentStoryIdx = i;
+  const s = stories[i];
+  document.getElementById('stories-list').style.display='none';
+  document.getElementById('story-reader').style.display='block';
+  const read = readStories.includes(i);
+  document.getElementById('story-content').innerHTML = `
+    <h2>${s.icon} ${s.title}</h2>
+    <div class="story-meta">📍 ${s.location}</div>
+    ${s.text.split('\n').filter(p=>p.trim()).map(p=>`<p>${p}</p>`).join('')}
+    <div class="moral">💡 Lesson: ${s.lesson}</div>`;
+  document.getElementById('star-btn').textContent = read ? '✅ Already Read' : '⭐ Mark as Read (+1 Star)';
+  document.getElementById('star-btn').disabled = read;
+}
+function closeStory(){
+  document.getElementById('stories-list').style.display='block';
+  document.getElementById('story-reader').style.display='none';
+}
+function earnStoryStar(){
+  if(!readStories.includes(currentStoryIdx)){
+    readStories.push(currentStoryIdx);
+    localStorage.setItem('brightmind_read',JSON.stringify(readStories));
+    stars++; saveStars();
+    document.getElementById('star-btn').textContent='✅ Already Read';
+    document.getElementById('star-btn').disabled=true;
+    renderStories();
+  }
+}
+
+// ===== PHONICS =====
+const alphabet = [
+  {l:'A',sound:'ay',desc:'Like in "Ace"',ex:['Apple','Ant','Arrow','Agbalumo']},
+  {l:'B',sound:'bee',desc:'A popping sound with lips',ex:['Ball','Broom','Banana','Buka']},
+  {l:'C',sound:'see',desc:'Like K or S depending on word',ex:['Cat','Corn','Circle','Calabash']},
+  {l:'D',sound:'dee',desc:'Tongue touches roof of mouth',ex:['Dog','Drum','Door','Danfo']},
+  {l:'E',sound:'ee',desc:'Like in "Elephant"',ex:['Egg','Ear','Eagle','Eba']},
+  {l:'F',sound:'ef',desc:'Upper teeth touch lower lip',ex:['Fish','Fire','Flower','Fufu']},
+  {l:'G',sound:'jee',desc:'Back of throat sound',ex:['Goat','Gold','Guitar','Garri']},
+  {l:'H',sound:'aych',desc:'A breathy sound',ex:['Hat','House','Hand','Harmattan']},
+  {l:'I',sound:'eye',desc:'Like in "Ice"',ex:['Ink','Island','Iron','Iroko']},
+  {l:'J',sound:'jay',desc:'Like the start of "Jump"',ex:['Jar','Jump','Jungle','Jollof']},
+  {l:'K',sound:'kay',desc:'Back of throat stop',ex:['King','Kite','Knife','Kola']},
+  {l:'L',sound:'el',desc:'Tongue tip behind front teeth',ex:['Lion','Leaf','Lamp','Lagos']},
+  {l:'M',sound:'em',desc:'Lips together humming',ex:['Moon','Market','Music','Moimoi']},
+  {l:'N',sound:'en',desc:'Tongue behind front teeth',ex:['Night','Nose','Number','Niger']},
+  {l:'O',sound:'oh',desc:'Rounded mouth sound',ex:['Orange','Ocean','Owl','Okra']},
+  {l:'P',sound:'pee',desc:'Lips burst apart',ex:['Pan','Pot','Pear','Puff-puff']},
+  {l:'Q',sound:'cue',desc:'Always followed by U',ex:['Queen','Quick','Quiet','Quail']},
+  {l:'R',sound:'ar',desc:'Tongue curls back slightly',ex:['Rain','River','Road','Rice']},
+  {l:'S',sound:'ess',desc:'Hissing snake sound',ex:['Sun','Sand','Star','Suya']},
+  {l:'T',sound:'tee',desc:'Tongue tip quick stop',ex:['Tree','Tiger','Town','Tuwo']},
+  {l:'U',sound:'you',desc:'Like in "Umbrella"',ex:['Umbrella','Uncle','Under','Ugali']},
+  {l:'V',sound:'vee',desc:'Teeth on lip vibrating',ex:['Van','Voice','Violet','Valley']},
+  {l:'W',sound:'double-you',desc:'Round lips then open',ex:['Water','Wind','Wall','Wara']},
+  {l:'X',sound:'ex',desc:'Makes a ks or z sound',ex:['Box','Fox','Xray','Axe']},
+  {l:'Y',sound:'why',desc:'Like in "Yes"',ex:['Yam','Yellow','Year','Yarrow']},
+  {l:'Z',sound:'zed',desc:'Buzzing bee sound',ex:['Zero','Zoo','Zebra','Zucchini']},
+];
+
+function renderAlphabet(){
+  document.getElementById('alpha-grid').innerHTML=alphabet.map((a,i)=>`
+    <div class="alpha-card" onclick="showPhonics(${i})">
+      <div class="letter">${a.l}</div>
+      <div class="sound">${a.sound}</div>
+    </div>`).join('');
+}
+renderAlphabet();
+
+function showPhonics(i){
+  currentPhonicsIdx=i;
+  const a=alphabet[i];
+  document.getElementById('phonics-list').style.display='none';
+  document.getElementById('phonics-detail').style.display='block';
+  document.getElementById('ph-letter').textContent=a.l;
+  document.getElementById('ph-sound').textContent='/"'+a.sound+'"/ — '+a.desc;
+  document.getElementById('ph-desc').textContent='';
+  document.getElementById('ph-examples').innerHTML=a.ex.map(e=>`<span class="ex-tag">${e}</span>`).join('');
+}
+function closePhonics(){
+  document.getElementById('phonics-list').style.display='block';
+  document.getElementById('phonics-detail').style.display='none';
+}
+function prevLetter(){ showPhonics((currentPhonicsIdx-1+26)%26); }
+function nextLetter(){ showPhonics((currentPhonicsIdx+1)%26); }
+
+// ===== MATHS =====
+const wordProblems = [
+  {q:"Amaka bought 12 oranges and gave 5 to her friend. How many does she have left?",a:7,opts:[5,7,8,6],exp:"12 − 5 = 7"},
+  {q:"A bus from Lagos to Ibadan costs ₦2,500. If Emeka pays ₦5,000, how much change does he get?",a:2500,opts:[2000,2500,3000,1500],exp:"₦5,000 − ₦2,500 = ₦2,500"},
+  {q:"Mama Ngozi sells 8 bunches of plantain per day. How many does she sell in a week?",a:56,opts:[48,56,64,40],exp:"8 × 7 = 56"},
+  {q:"There are 30 students in a class. 18 are girls. How many are boys?",a:12,opts:[10,12,14,8],exp:"30 − 18 = 12"},
+  {q:"A keke napep driver earns ₦4,200 in one day. How much in 5 days?",a:21000,opts:[20000,21000,22000,18000],exp:"₦4,200 × 5 = ₦21,000"},
+  {q:"Tunde divides 48 mangoes equally among 6 friends. How many does each get?",a:8,opts:[6,7,8,9],exp:"48 ÷ 6 = 8"},
+  {q:"A market trader has ₦15,000. She spends ₦8,750 on goods. How much remains?",a:6250,opts:[6250,6500,7000,5750],exp:"₦15,000 − ₦8,750 = ₦6,250"},
+  {q:"Chidi walks 3.5 km to school every day. How far does he walk in 5 days (to and from school)?",a:35,opts:[17.5,25,35,30],exp:"3.5 × 2 × 5 = 35 km"},
+  {q:"If 1 dollar = ₦1,600, how many naira is 3 dollars?",a:4800,opts:[4600,4800,5000,4200],exp:"3 × ₦1,600 = ₦4,800"},
+  {q:"A bag of rice costs ₦65,000. Mama buys it and sells it for ₦78,000. What is her profit?",a:13000,opts:[12000,13000,14000,11000],exp:"₦78,000 − ₦65,000 = ₦13,000"},
+];
+
+function genMathQ(level){
+  let q,a,opts,exp;
+  if(level==='word'){
+    const wp=wordProblems[Math.floor(Math.random()*wordProblems.length)];
+    return {q:wp.q,a:wp.a,opts:wp.opts.sort(()=>Math.random()-.5),exp:wp.exp};
+  }
+  const ops={'easy':['+','-'],'medium':['×','÷'],'hard':['+','-','×','÷']};
+  const op=ops[level][Math.floor(Math.random()*ops[level].length)];
+  let n1,n2;
+  if(level==='easy'){ n1=Math.floor(Math.random()*50)+1; n2=Math.floor(Math.random()*50)+1; }
+  else if(level==='medium'){ n1=Math.floor(Math.random()*12)+2; n2=Math.floor(Math.random()*12)+2; }
+  else { n1=Math.floor(Math.random()*20)+2; n2=Math.floor(Math.random()*20)+2; }
+  if(op==='+'){ a=n1+n2; q=`${n1} + ${n2} = ?`; exp=`${n1} + ${n2} = ${a}`; }
+  else if(op==='-'){ if(n1<n2)[n1,n2]=[n2,n1]; a=n1-n2; q=`${n1} − ${n2} = ?`; exp=`${n1} − ${n2} = ${a}`; }
+  else if(op==='×'){ a=n1*n2; q=`${n1} × ${n2} = ?`; exp=`${n1} × ${n2} = ${a}`; }
+  else { n2=Math.floor(Math.random()*10)+2; a=n2; n1=a*(Math.floor(Math.random()*10)+2); q=`${n1} ÷ ${n2} = ?`; exp=`${n1} ÷ ${n2} = ${a}`; }
+  const wrongs=new Set();
+  while(wrongs.size<3){ const w=a+Math.floor(Math.random()*10)-5; if(w!==a&&w>0)wrongs.add(w); }
+  opts=[a,...wrongs].sort(()=>Math.random()-.5);
+  return {q,a,opts,exp};
+}
+
+function startMaths(level){
+  mathsState={level,score:0,num:0,total:10,q:null};
+  document.getElementById('maths-home').style.display='none';
+  document.getElementById('maths-quiz').style.display='block';
+  nextMathQ();
+}
+function exitMaths(){
+  document.getElementById('maths-home').style.display='block';
+  document.getElementById('maths-quiz').style.display='none';
+}
+function nextMathQ(){
+  if(mathsState.num>=mathsState.total){ showMathsResult(); return; }
+  mathsState.q=genMathQ(mathsState.level);
+  mathsState.num++;
+  const {q,opts}=mathsState.q;
+  document.getElementById('maths-q-box').innerHTML=`
+    <div class="q-header"><span class="q-num">Q${mathsState.num}/${mathsState.total}</span><span class="q-score">⭐ ${mathsState.score}</span></div>
+    <div class="q-progress"><div class="q-progress-bar" style="width:${(mathsState.num/mathsState.total)*100}%"></div></div>
+    <div class="q-text">${q}</div>
+    <div class="options">${opts.map(o=>`<button class="option-btn" onclick="answerMaths(${o})">${o}</button>`).join('')}</div>`;
+}
+function answerMaths(chosen){
+  const {a,exp}=mathsState.q;
+  const correct=chosen===a;
+  if(correct){mathsState.score++;stars++;saveStars();}
+  document.querySelectorAll('#maths-q-box .option-btn').forEach(b=>{
+    b.disabled=true;
+    if(parseInt(b.textContent)==a)b.classList.add('correct');
+    else if(parseInt(b.textContent)==chosen&&!correct)b.classList.add('wrong');
+  });
+  const fb=document.createElement('div');
+  fb.className='feedback '+(correct?'correct':'wrong');
+  fb.textContent=correct?`✅ Correct! ${exp}`:`❌ Answer: ${exp}`;
+  const nb=document.createElement('button');
+  nb.className='next-btn'; nb.textContent='Next →'; nb.onclick=nextMathQ;
+  document.getElementById('maths-q-box').append(fb,nb);
+}
+function showMathsResult(){
+  const pct=Math.round((mathsState.score/mathsState.total)*100);
+  const grade=pct>=80?'Excellent!':pct>=60?'Good job!':pct>=40?'Keep practising':'Try again!';
+  document.getElementById('maths-q-box').innerHTML=`
+    <div class="result-box">
+      <div class="big-score">${pct}%</div>
+      <div class="grade">${grade}</div>
+      <p>${mathsState.score}/${mathsState.total} correct</p>
+      <div class="result-btns">
+        <button class="btn-retry" onclick="startMaths('${mathsState.level}')">🔄 Retry</button>
+        <button class="btn-home" onclick="exitMaths()" style="border:1px solid var(--border);">🏠 Levels</button>
+      </div>
+    </div>`;
+}
+
+// ===== QUIZ =====
+const quizTopics = [
+  { icon:'🦁', name:'Animals', qs:[
+    {q:"Which animal is called the King of the Jungle?",a:"Lion",opts:["Tiger","Lion","Elephant","Cheetah"],exp:"The lion is traditionally called the King of the Jungle."},
+    {q:"What is the largest animal on land?",a:"African Elephant",opts:["Giraffe","Hippo","African Elephant","Rhino"],exp:"The African elephant is the largest land animal."},
+    {q:"Which bird cannot fly?",a:"Ostrich",opts:["Eagle","Parrot","Ostrich","Flamingo"],exp:"Ostriches cannot fly but are the fastest running birds."},
+    {q:"What animal is found in Yankari Game Reserve, Nigeria?",a:"Elephant",opts:["Lion only","Elephant","Penguin","Kangaroo"],exp:"Yankari is famous for its elephants and baboons."},
+    {q:"How many legs does an insect have?",a:"6",opts:["4","6","8","10"],exp:"All insects have exactly 6 legs."},
+    {q:"What is a young goat called?",a:"Kid",opts:["Lamb","Calf","Kid","Foal"],exp:"A young goat is called a kid."},
+    {q:"Which animal produces the fastest land speed?",a:"Cheetah",opts:["Horse","Lion","Cheetah","Dog"],exp:"Cheetahs can run up to 120 km/h."},
+    {q:"What do caterpillars become?",a:"Butterflies or moths",opts:["Bees","Butterflies or moths","Beetles","Wasps"],exp:"Caterpillars metamorphose into butterflies or moths."},
+  ]},
+  { icon:'🔬', name:'Science', qs:[
+    {q:"What gas do plants need to make food?",a:"Carbon dioxide",opts:["Oxygen","Nitrogen","Carbon dioxide","Hydrogen"],exp:"Plants use CO₂ in photosynthesis."},
+    {q:"What is the closest star to Earth?",a:"The Sun",opts:["Sirius","Alpha Centauri","The Sun","Polaris"],exp:"The Sun is our nearest star, about 150 million km away."},
+    {q:"How many bones are in the adult human body?",a:"206",opts:["206","256","180","300"],exp:"Adults have 206 bones. Babies start with about 270."},
+    {q:"What is the chemical symbol for water?",a:"H₂O",opts:["HO","H₂O","OH","H₂O₂"],exp:"Water is two hydrogen atoms and one oxygen atom."},
+    {q:"Which planet is closest to the Sun?",a:"Mercury",opts:["Venus","Mars","Earth","Mercury"],exp:"Mercury is the innermost planet in our solar system."},
+    {q:"What organ pumps blood through the body?",a:"Heart",opts:["Lungs","Kidney","Heart","Liver"],exp:"The heart pumps approximately 5 litres of blood per minute."},
+    {q:"What is the process by which water turns to vapour?",a:"Evaporation",opts:["Condensation","Evaporation","Precipitation","Transpiration"],exp:"Evaporation is liquid water becoming water vapour."},
+    {q:"What force keeps us on the ground?",a:"Gravity",opts:["Magnetism","Friction","Gravity","Inertia"],exp:"Gravity is the force of attraction between masses."},
+  ]},
+  { icon:'📜', name:'Nigerian History', qs:[
+    {q:"Who was the first President of Nigeria?",a:"Nnamdi Azikiwe",opts:["Obafemi Awolowo","Ahmadu Bello","Nnamdi Azikiwe","Tafawa Balewa"],exp:"Dr Nnamdi Azikiwe was Nigeria's first President (1963–1966)."},
+    {q:"When did Nigeria gain independence?",a:"1960",opts:["1957","1960","1963","1970"],exp:"Nigeria became independent from Britain on October 1, 1960."},
+    {q:"What is Nigeria's capital city?",a:"Abuja",opts:["Lagos","Kano","Ibadan","Abuja"],exp:"Abuja became the capital in 1991, replacing Lagos."},
+    {q:"The Benin Kingdom was famous for which art form?",a:"Bronze casting",opts:["Pottery","Bronze casting","Weaving","Painting"],exp:"Benin bronzes are among the finest artworks in world history."},
+    {q:"Queen Amina was a warrior queen of which city?",a:"Zaria",opts:["Kano","Benin","Sokoto","Zaria"],exp:"Queen Amina of Zazzau (Zaria) ruled in the 16th century."},
+    {q:"Which river is the longest in Nigeria?",a:"River Niger",opts:["River Benue","River Osun","River Niger","River Kaduna"],exp:"The River Niger flows through Nigeria giving the country its name."},
+    {q:"What language group is Hausa part of?",a:"Afro-Asiatic",opts:["Niger-Congo","Nilo-Saharan","Afro-Asiatic","Kordofanian"],exp:"Hausa belongs to the Chadic branch of the Afro-Asiatic family."},
+    {q:"What is the name of Nigeria's currency?",a:"Naira",opts:["Pound","Shilling","Naira","Cedi"],exp:"The naira was introduced in 1973, replacing the pound."},
+  ]},
+  { icon:'🌍', name:'World Geography', qs:[
+    {q:"What is the largest continent?",a:"Asia",opts:["Africa","Asia","North America","Europe"],exp:"Asia covers about 44.6 million km², over 30% of Earth's land area."},
+    {q:"Which is the longest river in the world?",a:"Nile",opts:["Amazon","Nile","Yangtze","Congo"],exp:"The Nile River stretches about 6,650 km through northeastern Africa."},
+    {q:"What is the capital of France?",a:"Paris",opts:["Berlin","London","Madrid","Paris"],exp:"Paris has been the capital of France for many centuries."},
+    {q:"Which ocean is the largest?",a:"Pacific",opts:["Atlantic","Indian","Pacific","Arctic"],exp:"The Pacific Ocean covers more than 165 million km²."},
+    {q:"How many countries are in Africa?",a:"54",opts:["48","54","60","42"],exp:"Africa has 54 recognised sovereign countries."},
+    {q:"What is the highest mountain in the world?",a:"Mount Everest",opts:["K2","Kilimanjaro","Mont Blanc","Mount Everest"],exp:"Mount Everest stands at 8,849 m above sea level."},
+    {q:"Which country has the largest population in Africa?",a:"Nigeria",opts:["Egypt","Ethiopia","South Africa","Nigeria"],exp:"Nigeria has over 220 million people, the most in Africa."},
+    {q:"What is the official language of Brazil?",a:"Portuguese",opts:["Spanish","French","Portuguese","English"],exp:"Brazil was colonised by Portugal, so Portuguese is the official language."},
+  ]},
+];
+
+function renderQuizTopics(){
+  document.getElementById('quiz-topics').innerHTML=quizTopics.map((t,i)=>`
+    <div class="topic-card" onclick="startQuiz(${i})">
+      <div class="t-icon">${t.icon}</div>
+      <h3>${t.name}</h3>
+    </div>`).join('');
+}
+renderQuizTopics();
+
+function startQuiz(ti){
+  const t=quizTopics[ti];
+  quizState={questions:[...t.qs].sort(()=>Math.random()-.5),score:0,num:0};
+  document.getElementById('quiz-home').style.display='none';
+  document.getElementById('quiz-play').style.display='block';
+  nextQuizQ();
+}
+function exitQuiz(){
+  document.getElementById('quiz-home').style.display='block';
+  document.getElementById('quiz-play').style.display='none';
+}
+function nextQuizQ(){
+  if(quizState.num>=quizState.questions.length){ showQuizResult(); return; }
+  const q=quizState.questions[quizState.num++];
+  const shuffled=[...q.opts].sort(()=>Math.random()-.5);
+  document.getElementById('quiz-q-box').innerHTML=`
+    <div class="q-header"><span class="q-num">Q${quizState.num}/${quizState.questions.length}</span><span class="q-score">⭐ ${quizState.score}</span></div>
+    <div class="q-progress"><div class="q-progress-bar" style="width:${((quizState.num-1)/quizState.questions.length)*100}%"></div></div>
+    <div class="q-text">${q.q}</div>
+    <div class="options">${shuffled.map(o=>`<button class="option-btn" onclick="answerQuiz(this,'${o.replace(/'/g,"\\'")}','${q.a.replace(/'/g,"\\'")}','${q.exp.replace(/'/g,"\\'")}')">${o}</button>`).join('')}</div>`;
+}
+function answerQuiz(btn,chosen,correct,exp){
+  const right=chosen===correct;
+  if(right){quizState.score++;stars++;saveStars();}
+  document.querySelectorAll('#quiz-q-box .option-btn').forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===correct)b.classList.add('correct');
+    else if(b===btn&&!right)b.classList.add('wrong');
+  });
+  const fb=document.createElement('div');
+  fb.className='feedback '+(right?'correct':'wrong');
+  fb.textContent=right?`✅ ${exp}`:`❌ ${exp}`;
+  const nb=document.createElement('button');
+  nb.className='next-btn'; nb.textContent='Next →'; nb.onclick=nextQuizQ;
+  document.getElementById('quiz-q-box').append(fb,nb);
+}
+function showQuizResult(){
+  const pct=Math.round((quizState.score/quizState.questions.length)*100);
+  document.getElementById('quiz-q-box').innerHTML=`
+    <div class="result-box">
+      <div class="big-score">${pct}%</div>
+      <div class="grade">${pct>=80?'Excellent! 🏆':pct>=60?'Good job! 👍':pct>=40?'Keep going! 💪':'Try again! 🔄'}</div>
+      <p>${quizState.score}/${quizState.questions.length} correct</p>
+      <div class="result-btns">
+        <button class="btn-retry" onclick="exitQuiz()">🔄 New Topic</button>
+      </div>
+    </div>`;
+}
+
+// ===== EXAM DATA =====
+const examData = {
+  subjects: [
+    {icon:'📝',name:'English Language'},
+    {icon:'➕',name:'Mathematics'},
+    {icon:'⚡',name:'Physics'},
+    {icon:'🧪',name:'Chemistry'},
+    {icon:'🌿',name:'Biology'},
+    {icon:'💰',name:'Economics'},
+    {icon:'📚',name:'Literature'},
+    {icon:'⚖️',name:'Government'},
+    {icon:'🌍',name:'Geography'},
+  ],
+  questions: {
+    'English Language': [
+      {q:"Choose the correct form: 'Neither the students nor the teacher ___ ready.'",a:"was",opts:["were","was","are","is"],exp:"With 'neither...nor', the verb agrees with the subject closest to it — 'teacher' (singular), so 'was' is correct."},
+      {q:"Identify the figure of speech: 'The wind whispered through the trees.'",a:"Personification",opts:["Simile","Metaphor","Personification","Hyperbole"],exp:"Personification gives human qualities (whispering) to a non-human thing (wind)."},
+      {q:"What is the plural of 'phenomenon'?",a:"Phenomena",opts:["Phenomenons","Phenomena","Phenomenas","Phenomen"],exp:"'Phenomenon' is from Greek. The correct plural is 'phenomena'."},
+      {q:"Choose the correct word: 'The committee has reached ___ decision.'",a:"its",opts:["their","it's","its","they're"],exp:"'Committee' is a collective noun treated as singular. 'Its' (possessive, no apostrophe) is correct."},
+      {q:"'He bit off more than he could chew.' This means:",a:"He took on more than he could handle",opts:["He ate too much food","He took on more than he could handle","He was very hungry","He was greedy"],exp:"This idiom means to attempt something more difficult than one can manage."},
+      {q:"What literary device is used: 'She sells seashells by the seashore'?",a:"Alliteration",opts:["Assonance","Alliteration","Onomatopoeia","Rhyme"],exp:"Alliteration is the repetition of the same consonant sound at the start of words."},
+      {q:"The word 'benevolent' means:",a:"Generous and kind",opts:["Angry","Generous and kind","Jealous","Lazy"],exp:"Benevolent comes from Latin bene (well) + volent (wishing) — wishing others well."},
+      {q:"Choose the correct tense: 'By next year, she ___ her degree.'",a:"will have completed",opts:["will complete","completes","will have completed","has completed"],exp:"The future perfect tense is used for an action that will be completed before a future time."},
+      {q:"What is the antonym of 'verbose'?",a:"Concise",opts:["Wordy","Concise","Lengthy","Talkative"],exp:"Verbose means using too many words. Concise means expressing much in few words."},
+      {q:"Identify the clause type: 'Although it was raining, they played football.'",a:"Adverbial clause of concession",opts:["Noun clause","Relative clause","Adverbial clause of concession","Adverbial clause of time"],exp:"'Although it was raining' concedes a point while contrasting the main clause — an adverbial clause of concession."},
+    ],
+    'Mathematics': [
+      {q:"If 2x + 5 = 15, find x.",a:"5",opts:["4","5","6","7"],exp:"2x = 15 − 5 = 10, so x = 10 ÷ 2 = 5."},
+      {q:"What is the value of sin 30°?",a:"0.5",opts:["√2/2","0.5","√3/2","1"],exp:"sin 30° = 1/2 = 0.5. This is a standard trigonometric value."},
+      {q:"Simplify: 3²  × 3³",a:"243",opts:["729","81","243","27"],exp:"3² × 3³ = 3^(2+3) = 3⁵ = 243."},
+      {q:"Find the LCM of 12 and 18.",a:"36",opts:["6","24","36","72"],exp:"12 = 2²×3, 18 = 2×3². LCM = 2²×3² = 36."},
+      {q:"The area of a circle with radius 7 cm is: (π = 22/7)",a:"154 cm²",opts:["44 cm²","154 cm²","22 cm²","308 cm²"],exp:"Area = πr² = (22/7) × 7² = 22 × 7 = 154 cm²."},
+      {q:"If a straight line has gradient 3 and passes through (0, 2), its equation is:",a:"y = 3x + 2",opts:["y = 2x + 3","y = 3x + 2","y = 3x − 2","y = 2x − 3"],exp:"y = mx + c where m = 3 (gradient) and c = 2 (y-intercept)."},
+      {q:"What is 15% of 200?",a:"30",opts:["25","30","35","20"],exp:"15% of 200 = (15/100) × 200 = 30."},
+      {q:"Factorise: x² − 9",a:"(x+3)(x−3)",opts:["(x−3)²","(x+9)(x−1)","(x+3)(x−3)","(x+3)²"],exp:"Difference of two squares: a² − b² = (a+b)(a−b). So x² − 9 = (x+3)(x−3)."},
+      {q:"The sum of interior angles of a hexagon is:",a:"720°",opts:["540°","720°","900°","1080°"],exp:"Formula: (n−2) × 180°. For hexagon: (6−2) × 180° = 4 × 180° = 720°."},
+      {q:"Express 0.00345 in standard form.",a:"3.45 × 10⁻³",opts:["34.5 × 10⁻⁴","3.45 × 10⁻³","0.345 × 10⁻²","3.45 × 10³"],exp:"Move decimal 3 places right: 3.45 × 10⁻³."},
+    ],
+    'Physics': [
+      {q:"What is the SI unit of force?",a:"Newton",opts:["Joule","Pascal","Newton","Watt"],exp:"The newton (N) is the SI unit of force = kg·m/s²."},
+      {q:"Which law states: for every action there is an equal and opposite reaction?",a:"Newton's 3rd law",opts:["Newton's 1st law","Newton's 2nd law","Newton's 3rd law","Hooke's law"],exp:"Newton's Third Law describes action-reaction force pairs."},
+      {q:"The speed of light in a vacuum is approximately:",a:"3 × 10⁸ m/s",opts:["3 × 10⁶ m/s","3 × 10⁸ m/s","3 × 10¹⁰ m/s","3 × 10⁴ m/s"],exp:"c ≈ 3 × 10⁸ m/s (about 300,000 km/s)."},
+      {q:"What type of energy is stored in a compressed spring?",a:"Elastic potential energy",opts:["Kinetic energy","Gravitational potential energy","Elastic potential energy","Chemical energy"],exp:"A compressed or stretched spring stores elastic potential energy."},
+      {q:"Ohm's law states that V = ?",a:"IR",opts:["I/R","IR","I+R","I²R"],exp:"Ohm's Law: Voltage = Current × Resistance (V = IR)."},
+      {q:"What is the unit of electrical resistance?",a:"Ohm (Ω)",opts:["Volt","Ampere","Ohm (Ω)","Watt"],exp:"Resistance is measured in ohms (Ω), named after Georg Ohm."},
+      {q:"Which type of wave does NOT require a medium to travel?",a:"Electromagnetic wave",opts:["Sound wave","Seismic wave","Electromagnetic wave","Water wave"],exp:"Electromagnetic waves (light, radio, X-rays) travel through a vacuum."},
+      {q:"What happens to pressure when volume decreases at constant temperature?",a:"Pressure increases",opts:["Pressure decreases","Pressure increases","Pressure stays the same","Pressure becomes zero"],exp:"Boyle's Law: P₁V₁ = P₂V₂. If V decreases, P increases."},
+      {q:"What is the formula for kinetic energy?",a:"½mv²",opts:["mv","mgh","½mv²","mv²"],exp:"KE = ½mv² where m is mass and v is velocity."},
+      {q:"The frequency of the Nigerian electricity supply is:",a:"50 Hz",opts:["60 Hz","50 Hz","100 Hz","25 Hz"],exp:"Nigeria uses 50 Hz AC electricity supply, like most of Africa and Europe."},
+    ],
+    'Chemistry': [
+      {q:"What is the atomic number of Carbon?",a:"6",opts:["12","6","14","8"],exp:"Carbon has 6 protons in its nucleus, giving it atomic number 6."},
+      {q:"Which gas is produced when zinc reacts with dilute H₂SO₄?",a:"Hydrogen",opts:["Oxygen","Hydrogen","Carbon dioxide","Nitrogen"],exp:"Zn + H₂SO₄ → ZnSO₄ + H₂. Hydrogen gas is produced."},
+      {q:"What is the pH of pure water at 25°C?",a:"7",opts:["5","6","7","8"],exp:"Pure water is neutral with a pH of 7 at 25°C."},
+      {q:"Which type of bond is found in NaCl?",a:"Ionic bond",opts:["Covalent bond","Metallic bond","Ionic bond","Hydrogen bond"],exp:"NaCl is formed by transfer of electrons from Na to Cl — an ionic bond."},
+      {q:"The process of converting a liquid to a gas is called:",a:"Vaporisation",opts:["Condensation","Vaporisation","Solidification","Sublimation"],exp:"Vaporisation (boiling/evaporation) converts liquid to gas."},
+      {q:"What is the chemical formula for ammonia?",a:"NH₃",opts:["NO₂","NH₃","N₂H₄","NH₄"],exp:"Ammonia is NH₃ — one nitrogen atom bonded to three hydrogen atoms."},
+      {q:"Which of these is a noble gas?",a:"Argon",opts:["Nitrogen","Chlorine","Argon","Fluorine"],exp:"Noble gases (Group 18) are Helium, Neon, Argon, Krypton, Xenon, Radon."},
+      {q:"What type of reaction is: A + BC → AC + B?",a:"Displacement",opts:["Combination","Decomposition","Displacement","Reversible"],exp:"A single displacement reaction: one element replaces another in a compound."},
+      {q:"The molar mass of H₂O is:",a:"18 g/mol",opts:["16 g/mol","18 g/mol","20 g/mol","22 g/mol"],exp:"H₂O: 2(1) + 16 = 18 g/mol."},
+      {q:"Crude oil in Nigeria is refined at which location?",a:"Port Harcourt",opts:["Lagos","Warri","Port Harcourt","Kaduna"],exp:"Nigeria has refineries in Port Harcourt, Warri and Kaduna, with Port Harcourt being the largest."},
+    ],
+    'Biology': [
+      {q:"What is the powerhouse of the cell?",a:"Mitochondria",opts:["Nucleus","Ribosome","Mitochondria","Chloroplast"],exp:"Mitochondria produce ATP (energy) through cellular respiration."},
+      {q:"Which blood group is the universal donor?",a:"O−",opts:["AB+","A+","O+","O−"],exp:"O− red blood cells can be transfused to any patient in emergencies."},
+      {q:"What is the process by which cells divide?",a:"Mitosis / Meiosis",opts:["Osmosis","Mitosis / Meiosis","Diffusion","Transpiration"],exp:"Mitosis produces identical cells; meiosis produces sex cells (gametes)."},
+      {q:"Which organ produces insulin in the human body?",a:"Pancreas",opts:["Liver","Kidney","Pancreas","Spleen"],exp:"The islets of Langerhans in the pancreas produce insulin to regulate blood glucose."},
+      {q:"What is the function of haemoglobin?",a:"Transport oxygen in blood",opts:["Fight infections","Transport oxygen in blood","Digest food","Filter waste"],exp:"Haemoglobin in red blood cells binds to oxygen and carries it to body tissues."},
+      {q:"What is the scientific name for malaria-causing parasite?",a:"Plasmodium",opts:["Anopheles","Plasmodium","Trypanosoma","Leishmania"],exp:"Plasmodium (falciparum, vivax, etc.) causes malaria; Anopheles is the mosquito vector."},
+      {q:"Which vitamin is produced by the skin in sunlight?",a:"Vitamin D",opts:["Vitamin A","Vitamin B","Vitamin C","Vitamin D"],exp:"UV rays from sunlight convert cholesterol in skin to Vitamin D₃."},
+      {q:"What structure controls what enters and leaves a cell?",a:"Cell membrane",opts:["Cell wall","Nucleus","Cell membrane","Vacuole"],exp:"The selectively permeable cell membrane regulates passage of substances."},
+      {q:"DNA stands for:",a:"Deoxyribonucleic acid",opts:["Deoxyribonucleic acid","Diribonucleic acid","Diphenylribonucleic acid","Deoxyribose nucleic acid"],exp:"DNA = Deoxyribonucleic acid — the molecule that carries genetic information."},
+      {q:"Which part of the plant absorbs water from the soil?",a:"Root hair cells",opts:["Leaves","Stem","Root hair cells","Flowers"],exp:"Root hair cells have a large surface area to absorb water and minerals."},
+    ],
+    'Economics': [
+      {q:"What does GDP stand for?",a:"Gross Domestic Product",opts:["General Domestic Product","Gross Domestic Product","Gross Development Plan","Government Domestic Policy"],exp:"GDP measures the total monetary value of all goods and services produced in a country in a year."},
+      {q:"What is the law of demand?",a:"As price rises, quantity demanded falls (ceteris paribus)",opts:["As price rises, quantity demanded rises","As price rises, quantity demanded falls (ceteris paribus)","Supply increases as price falls","Demand equals supply at equilibrium"],exp:"The Law of Demand: there is an inverse relationship between price and quantity demanded."},
+      {q:"Which bank is Nigeria's central bank?",a:"Central Bank of Nigeria (CBN)",opts:["First Bank","Access Bank","Central Bank of Nigeria (CBN)","Zenith Bank"],exp:"The CBN is Nigeria's apex bank, established in 1959."},
+      {q:"What is inflation?",a:"A general rise in the price level over time",opts:["A fall in the price level","A general rise in the price level over time","An increase in production","A decrease in unemployment"],exp:"Inflation erodes purchasing power as the average price level rises."},
+      {q:"Which type of economy does Nigeria operate?",a:"Mixed economy",opts:["Free market economy","Command economy","Mixed economy","Barter economy"],exp:"Nigeria has a mixed economy with both public and private sector participation."},
+      {q:"What is opportunity cost?",a:"The value of the next best alternative forgone",opts:["The price of a good","The value of the next best alternative forgone","The cost of production","Total expenditure"],exp:"Opportunity cost is what you give up when you make a choice."},
+      {q:"Elasticity of demand measures:",a:"Responsiveness of quantity demanded to price change",opts:["Total revenue","Responsiveness of quantity demanded to price change","Cost of production","Market size"],exp:"Price elasticity of demand = % change in QD ÷ % change in price."},
+      {q:"What is OPEC?",a:"Organisation of Petroleum Exporting Countries",opts:["Organisation of Pacific Economic Countries","Organisation of Petroleum Exporting Countries","Organisation of Poor Emerging Countries","Organisation of Pan-African Economic Cooperation"],exp:"OPEC is a group of oil-producing nations that coordinates petroleum policies. Nigeria is a member."},
+    ],
+    'Literature': [
+      {q:"Who wrote 'Things Fall Apart'?",a:"Chinua Achebe",opts:["Wole Soyinka","Chinua Achebe","Ben Okri","Chimamanda Adichie"],exp:"Chinua Achebe published 'Things Fall Apart' in 1958. It is the most widely read African novel."},
+      {q:"What is a sonnet?",a:"A 14-line poem",opts:["An 8-line poem","A 14-line poem","A 16-line poem","A poem with no fixed length"],exp:"A sonnet is a poem of 14 lines, typically in iambic pentameter."},
+      {q:"In 'Things Fall Apart', what is Okonkwo's fatal flaw?",a:"His fear of appearing weak like his father",opts:["Laziness","Cowardice","His fear of appearing weak like his father","Greed"],exp:"Okonkwo's entire life is driven by his terror of being perceived as weak or effeminate like his father Unoka."},
+      {q:"What literary term describes a story within a story?",a:"Frame narrative",opts:["Flashback","Frame narrative","Foreshadowing","Allegory"],exp:"A frame narrative (or frame story) is a story that contains another story within it."},
+      {q:"Who wrote 'Purple Hibiscus'?",a:"Chimamanda Ngozi Adichie",opts:["Buchi Emecheta","Chimamanda Ngozi Adichie","Flora Nwapa","Adaora Ulasi"],exp:"'Purple Hibiscus' (2003) was Chimamanda Ngozi Adichie's debut novel."},
+      {q:"What is dramatic irony?",a:"When the audience knows something the characters don't",opts:["When a character says the opposite of what they mean","When the audience knows something the characters don't","When events turn out unexpectedly","When two characters misunderstand each other"],exp:"Dramatic irony creates tension because the audience has information that characters lack."},
+      {q:"'The Lion and the Jewel' was written by:",a:"Wole Soyinka",opts:["J.P. Clark","Ola Rotimi","Wole Soyinka","Femi Osofisan"],exp:"Wole Soyinka, Nigeria's Nobel laureate, wrote 'The Lion and the Jewel' (1959)."},
+      {q:"What is the theme of 'Death and the King's Horseman'?",a:"Conflict between tradition and colonialism",opts:["Love and betrayal","Conflict between tradition and colonialism","War and peace","Wealth and poverty"],exp:"Soyinka's play explores the collision between Yoruba tradition and British colonial intervention."},
+    ],
+    'Government': [
+      {q:"What is federalism?",a:"A system where power is divided between central and regional governments",opts:["A one-party state","A system where power is divided between central and regional governments","Rule by the military","Rule by a king"],exp:"In a federal system, sovereignty is constitutionally divided between national and sub-national governments."},
+      {q:"Nigeria is divided into how many states?",a:"36 states + FCT",opts:["30","36 states + FCT","32","40"],exp:"Nigeria has 36 states and the Federal Capital Territory (Abuja)."},
+      {q:"What is the role of the judiciary?",a:"To interpret and apply the law",opts:["To make laws","To enforce laws","To interpret and apply the law","To collect taxes"],exp:"The judiciary (courts) interprets laws and resolves disputes, acting as a check on other branches."},
+      {q:"What does 'separation of powers' mean?",a:"Dividing government into executive, legislative and judicial branches",opts:["Dividing government into executive, legislative and judicial branches","Separating Nigeria into regions","Distributing power only to states","Giving all power to the President"],exp:"Separation of powers prevents concentration of authority in one branch."},
+      {q:"Which body makes laws in Nigeria at the federal level?",a:"National Assembly",opts:["State Assembly","Supreme Court","National Assembly","Federal Executive Council"],exp:"The National Assembly (Senate + House of Representatives) is Nigeria's federal legislature."},
+      {q:"What is a constitution?",a:"The fundamental law of a country",opts:["A government directive","A court ruling","The fundamental law of a country","A presidential speech"],exp:"A constitution establishes the principles, structures, and limits of government."},
+      {q:"Universal Adult Suffrage means:",a:"All adults have the right to vote",opts:["Only rich adults vote","All adults have the right to vote","Only educated people vote","Only men vote"],exp:"Universal adult suffrage gives every adult citizen the right to vote regardless of class, gender, or education."},
+      {q:"What is a pressure group?",a:"An organized group that influences government policy without seeking power",opts:["A political party","An organized group that influences government policy without seeking power","A military group","A religious organization"],exp:"Unlike political parties, pressure groups seek to influence policy without taking government office."},
+    ],
+    'Geography': [
+      {q:"What is the capital of Osun State, Nigeria?",a:"Osogbo",opts:["Ife","Ilesa","Osogbo","Ilesha"],exp:"Osogbo (also spelled Oshogbo) is the capital of Osun State, known for the Osun-Osogbo Sacred Grove."},
+      {q:"Which is the largest lake in Africa?",a:"Lake Victoria",opts:["Lake Chad","Lake Tanganyika","Lake Victoria","Lake Malawi"],exp:"Lake Victoria is Africa's largest lake and the world's second-largest freshwater lake."},
+      {q:"What is erosion?",a:"The wearing away and removal of rock or soil",opts:["Deposition of soil","The wearing away and removal of rock or soil","Volcanic activity","Flooding"],exp:"Erosion is the process by which water, wind, or ice wears away and removes rock or soil."},
+      {q:"The harmattan wind comes from:",a:"The Sahara Desert",opts:["The Atlantic Ocean","The Mediterranean Sea","The Sahara Desert","The Gulf of Guinea"],exp:"Harmattan is a dry, dusty trade wind that blows from the Sahara over West Africa."},
+      {q:"What is the greenhouse effect?",a:"Trapping of heat in Earth's atmosphere by gases",opts:["Plants growing faster in warm weather","Trapping of heat in Earth's atmosphere by gases","Rain caused by forests","Cooling of the Earth's surface"],exp:"Greenhouse gases (CO₂, methane) absorb and re-radiate heat, warming the atmosphere."},
+      {q:"What type of climate does most of southern Nigeria have?",a:"Tropical rainforest climate",opts:["Desert climate","Mediterranean climate","Tropical rainforest climate","Savanna climate"],exp:"Southern Nigeria receives high rainfall year-round, supporting tropical rainforest vegetation."},
+      {q:"The River Benue joins the River Niger at:",a:"Lokoja",opts:["Onitsha","Jebba","Lokoja","Kainji"],exp:"Lokoja in Kogi State is where the Benue and Niger rivers meet — it is called the confluence."},
+      {q:"What is population density?",a:"Number of people per unit area",opts:["Total number of people in a country","Number of people per unit area","Rate of population growth","Number of births per year"],exp:"Population density = Total population ÷ Area (e.g. people per km²)."},
+    ],
+  }
+};
+
+// ===== EXAM LOGIC =====
+let currentExam='', currentSubject='', currentMode='', examQuestions=[], examAnswers=[];
+
+function selectExam(exam){
+  currentExam=exam;
+  const names={waec:'WAEC',neco:'NECO',jamb:'JAMB / UTME',postutme:'Post UTME'};
+  document.getElementById('exam-title').textContent=names[exam]+' — Choose Subject';
+  document.getElementById('exam-home').style.display='none';
+  document.getElementById('exam-subjects').style.display='block';
+  document.getElementById('subject-grid').innerHTML=examData.subjects.map(s=>`
+    <div class="subject-card" onclick="selectSubject('${s.name}')">
+      <div class="subj-icon">${s.icon}</div>
+      <h4>${s.name}</h4>
+    </div>`).join('');
+}
+function backToExams(){
+  document.getElementById('exam-subjects').style.display='none';
+  document.getElementById('exam-mode').style.display='none';
+  document.getElementById('exam-quiz').style.display='none';
+  document.getElementById('exam-result').style.display='none';
+  document.getElementById('exam-home').style.display='block';
+}
+function selectSubject(subj){
+  currentSubject=subj;
+  document.getElementById('mode-title').textContent=subj+' — Study Mode';
+  document.getElementById('exam-subjects').style.display='none';
+  document.getElementById('exam-mode').style.display='block';
+}
+function backToSubjects(){
+  document.getElementById('exam-mode').style.display='none';
+  document.getElementById('exam-subjects').style.display='block';
+}
+function startExam(mode){
+  currentMode=mode;
+  examQuestions=[...examData.questions[currentSubject]].sort(()=>Math.random()-.5);
+  examAnswers=[];
+  examState={num:0,score:0,timer:null};
+  document.getElementById('exam-mode').style.display='none';
+  document.getElementById('exam-quiz').style.display='block';
+  nextExamQ();
+}
+function exitExam(){
+  clearInterval(examState.timer);
+  document.getElementById('exam-quiz').style.display='none';
+  backToExams();
+}
+function nextExamQ(){
+  clearInterval(examState.timer);
+  if(examState.num>=examQuestions.length){ showExamResult(); return; }
+  const q=examQuestions[examState.num];
+  const shuffled=[...q.opts].sort(()=>Math.random()-.5);
+  let timerHtml='';
+  if(currentMode==='timed') timerHtml=`<div class="timer-bar"><div class="timer-bar-inner" id="timer-bar-inner"></div></div>`;
+  document.getElementById('exam-q-box').innerHTML=`
+    <div class="q-header">
+      <span class="q-num">Q${examState.num+1}/${examQuestions.length}</span>
+      <span class="q-score" style="color:var(--accent2)">${currentExam.toUpperCase()} · ${currentSubject}</span>
+    </div>
+    <div class="q-progress"><div class="q-progress-bar" style="width:${(examState.num/examQuestions.length)*100}%"></div></div>
+    ${timerHtml}
+    <div class="q-text">${q.q}</div>
+    <div class="options" id="exam-opts">${shuffled.map(o=>`<button class="option-btn" onclick="answerExam(this,'${o.replace(/'/g,"\\'")}','${q.a.replace(/'/g,"\\'")}','${q.exp.replace(/'/g,"\\'")}')">${o}</button>`).join('')}</div>`;
+  if(currentMode==='timed'){
+    let t=40;
+    const bar=document.getElementById('timer-bar-inner');
+    examState.timer=setInterval(()=>{
+      t--;
+      if(bar)bar.style.width=(t/40*100)+'%';
+      if(t<=10&&bar)bar.style.background='var(--red)';
+      if(t<=0){ clearInterval(examState.timer); autoFailExam(q); }
+    },1000);
+  }
+}
+function autoFailExam(q){
+  examAnswers.push({q:q.q,chosen:'(Time up)',correct:q.a,exp:q.exp,right:false});
+  document.querySelectorAll('#exam-opts .option-btn').forEach(b=>{b.disabled=true;if(b.textContent===q.a)b.classList.add('correct');});
+  const fb=document.createElement('div');fb.className='feedback wrong';fb.textContent='⏱️ Time up! '+q.exp;
+  const nb=document.createElement('button');nb.className='next-btn';nb.textContent='Next →';nb.onclick=()=>{examState.num++;nextExamQ();};
+  document.getElementById('exam-q-box').append(fb,nb);
+}
+function answerExam(btn,chosen,correct,exp){
+  clearInterval(examState.timer);
+  const right=chosen===correct;
+  if(currentMode==='marathon'&&!right){ showExamResult(); return; }
+  if(right){examState.score++;stars++;saveStars();}
+  examAnswers.push({q:document.querySelector('#exam-q-box .q-text').textContent,chosen,correct,exp,right});
+  document.querySelectorAll('#exam-opts .option-btn').forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===correct)b.classList.add('correct');
+    else if(b===btn&&!right)b.classList.add('wrong');
+  });
+  if(currentMode==='practice'){
+    const fb=document.createElement('div');fb.className='feedback '+(right?'correct':'wrong');
+    fb.textContent=right?`✅ ${exp}`:`❌ ${exp}`;
+    document.getElementById('exam-q-box').append(fb);
+  }
+  const nb=document.createElement('button');nb.className='next-btn';nb.textContent=examState.num+1>=examQuestions.length?'See Results →':'Next →';
+  nb.onclick=()=>{examState.num++;nextExamQ();};
+  document.getElementById('exam-q-box').append(nb);
+}
+function showExamResult(){
+  const total=currentMode==='marathon'?examAnswers.length:examQuestions.length;
+  const pct=total>0?Math.round((examState.score/total)*100):0;
+  const grade=pct>=75?'A — Distinction':pct>=60?'B — Credit':pct>=50?'C — Pass':pct>=45?'D — Below Credit':'F — Fail';
+  document.getElementById('exam-quiz').style.display='none';
+  document.getElementById('exam-result').style.display='block';
+  document.getElementById('exam-score').textContent=pct+'%';
+  document.getElementById('exam-grade').textContent=grade;
+  document.getElementById('exam-result-msg').textContent=`${examState.score} correct out of ${total} questions · ${currentSubject}`;
+  document.getElementById('exam-review').style.display='none';
+}
+function retryExam(){ document.getElementById('exam-result').style.display='none'; startExam(currentMode); }
+function viewReview(){
+  const rv=document.getElementById('exam-review');
+  rv.style.display = rv.style.display==='none' ? 'block' : 'none';
+  if(rv.style.display==='block'){
+    rv.innerHTML=examAnswers.map(a=>`
+      <div class="review-item ${a.right?'correct-r':'wrong-r'}">
+        <div class="r-q">${a.q}</div>
+        <div class="r-ans">${a.right?'✅':'❌'} You: ${a.chosen}<br>✔️ Answer: ${a.correct}<br>💡 ${a.exp}</div>
+      </div>`).join('');
+  }
+}
+
+// ===== PWA =====
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault(); deferredPrompt=e;
+  document.getElementById('installBtn').style.display='block';
+});
+function installApp(){
+  if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt.choice.then(()=>{deferredPrompt=null;document.getElementById('installBtn').style.display='none';}); }
+}
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js'); }
+</script>
+</body>
+</html>

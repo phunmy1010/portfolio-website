@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#161229"/>
+      <stop offset="100%" stop-color="#0c0a12"/>
+    </linearGradient>
+    <radialGradient id="glow2" cx="60%" cy="25%" r="55%">
+      <stop offset="0%" stop-color="#9b7ee0" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#9b7ee0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1400" height="900" fill="url(#bg2)"/>
+  <rect width="1400" height="900" fill="url(#glow2)"/>
+  <g opacity="0.08" stroke="#d4a24c" stroke-width="2" fill="none">
+    <path d="M1200 100 L1200 250 M1125 175 L1275 175"/>
+    <circle cx="1200" cy="175" r="95"/>
+    <path d="M180 650 L180 800 M105 725 L255 725"/>
+    <circle cx="180" cy="725" r="95"/>
+  </g>
+  <text x="100" y="420" font-family="Georgia, serif" font-style="italic" font-size="82" fill="#f3f1f6">BrightMind NG</text>
+  <text x="100" y="475" font-family="monospace" font-size="22" letter-spacing="2" fill="#d4a24c">WAEC · NECO · JAMB EXAM PREP</text>
+  <g transform="translate(100,530)">
+    <rect width="200" height="56" rx="12" fill="#18141f" stroke="#2a2435"/>
+    <text x="20" y="35" font-family="monospace" font-size="16" fill="#f7a072">★ Folktales</text>
+  </g>
+  <g transform="translate(320,530)">
+    <rect width="180" height="56" rx="12" fill="#18141f" stroke="#2a2435"/>
+    <text x="20" y="35" font-family="monospace" font-size="16" fill="#e493b3">Phonics</text>
+  </g>
+  <g transform="translate(520,530)">
+    <rect width="220" height="56" rx="12" fill="#18141f" stroke="#2a2435"/>
+    <text x="20" y="35" font-family="monospace" font-size="16" fill="#9b7ee0">Exam Practice</text>
+  </g>
+</svg>
