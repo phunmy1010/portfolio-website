@@ -15,7 +15,8 @@ const PROJECTS = [
     discovery: "Existing meal-planning tools assumed grocery-store pricing and ingredient availability that simply doesn't match Nigerian open-market shopping patterns, leaving users to do all the price-translation work themselves.",
     results: "Shipped with full auth, a working premium paywall, and seven free-standing tools: Weekly Planner, Shopping List, Budget Tools, Spend Tracker, Meals & Recipes, Gym Mode, and Kids Lunchbox (110+ combos).",
     live: "https://lorvyn-core.github.io/MealPilot/",
-    isLive: true
+    isLive: true,
+    caseStudyPage: "mealpilot.html"
   },
   {
     id: "brightmind-ng",
@@ -140,7 +141,10 @@ function renderProjects() {
         <div class="project-tags">
           ${p.tags.map(t => `<span class="tag-chip">${t}</span>`).join("")}
         </div>
-        <button class="project-cta" onclick="openCaseStudy('${p.id}')">Read Case Study →</button>
+        ${p.caseStudyPage
+          ? `<a class="project-cta" href="${p.caseStudyPage}">Read Case Study →</a>`
+          : `<button class="project-cta" onclick="openCaseStudy('${p.id}')">Read Case Study →</button>`
+        }
       </div>
     </div>`;
   }).join("");

@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MealPilot Case Study — Blessing Joshua</title>
+<meta name="description" content="How I designed and built MealPilot — a Nigerian meal planning web app for the user who's been told healthy eating isn't for them." />
+<link rel="stylesheet" href="styles.css" />
+<script>
+  (function() {
+    try {
+      var saved = localStorage.getItem("portfolio-theme");
+      var theme = saved === "light" || saved === "dark"
+        ? saved
+        : (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+      if (theme === "light") document.documentElement.setAttribute("data-theme", "light");
+    } catch (e) {}
+  })();
+</script>
+<style>
+  /* ── Case Study Page Specific Styles ── */
+  .cs-hero {
+    padding: 120px 0 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cs-hero::before {
+    content: "";
+    position: absolute;
+    top: -120px; left: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(228,147,179,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cs-hero::after {
+    content: "";
+    position: absolute;
+    top: 0; right: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(155,126,224,0.10) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cs-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 48px;
+    transition: color .2s;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  .cs-back:hover { color: var(--pink); }
+  .cs-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    color: var(--pink);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .cs-title {
+    font-family: var(--font-serif);
+    font-size: clamp(2.6rem, 6vw, 4.2rem);
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+  .cs-subtitle {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    max-width: 620px;
+    line-height: 1.7;
+    margin-bottom: 48px;
+    font-style: italic;
+  }
+  .cs-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    margin-bottom: 56px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cs-meta-item { display: flex; flex-direction: column; gap: 4px; }
+  .cs-meta-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .cs-meta-value { font-size: 0.95rem; color: var(--text); font-weight: 500; }
+
+  .cs-cover {
+    width: 100%;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    margin-bottom: 80px;
+    background: var(--bg-card);
+    aspect-ratio: 16/7;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .cs-cover-placeholder {
+    width: 100%;
+    aspect-ratio: 16/7;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    margin-bottom: 80px;
+    background: linear-gradient(135deg, var(--bg-card) 0%, #1e1730 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cs-cover-placeholder::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(228,147,179,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 30%, rgba(155,126,224,0.12) 0%, transparent 50%);
+  }
+  .cs-cover-app-name {
+    font-family: var(--font-serif);
+    font-size: 3rem;
+    color: var(--pink);
+    position: relative;
+    z-index: 1;
+  }
+  .cs-cover-tagline {
+    position: relative;
+    z-index: 1;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+
+  .cs-body {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 64px;
+    align-items: start;
+    margin-bottom: 80px;
+  }
+  @media (max-width: 768px) {
+    .cs-body { grid-template-columns: 1fr; }
+    .cs-sidebar { order: -1; }
+  }
+
+  .cs-section { margin-bottom: 64px; }
+  .cs-section-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--pink);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .cs-section-title {
+    font-family: var(--font-serif);
+    font-size: 1.8rem;
+    color: var(--text);
+    margin-bottom: 20px;
+    line-height: 1.2;
+  }
+  .cs-section p {
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin-bottom: 16px;
+    font-size: 1rem;
+  }
+  .cs-section p:last-child { margin-bottom: 0; }
+
+  .cs-highlight {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--pink);
+    border-radius: var(--radius-sm);
+    padding: 24px 28px;
+    margin: 32px 0;
+  }
+  .cs-highlight strong {
+    color: var(--pink);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 10px;
+  }
+  .cs-highlight p {
+    color: var(--text);
+    margin: 0;
+    font-style: italic;
+    line-height: 1.7;
+  }
+
+  .cs-user-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin: 32px 0;
+  }
+  .cs-user-name {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .cs-user-tag {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--violet);
+    margin-bottom: 16px;
+    display: block;
+  }
+  .cs-user-card p { color: var(--text-muted); line-height: 1.7; margin: 0; font-size: 0.95rem; }
+
+  .cs-needs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  @media (max-width: 540px) { .cs-needs-grid { grid-template-columns: 1fr; } }
+  .cs-need-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .cs-need-icon { font-size: 1.4rem; }
+  .cs-need-label { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+  .cs-need-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; }
+
+  .cs-research-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  @media (max-width: 540px) { .cs-research-grid { grid-template-columns: 1fr; } }
+  .cs-research-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+  }
+  .cs-research-item .label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--violet);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .cs-research-item p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin: 0; }
+
+  .cs-features-list { margin: 24px 0; display: flex; flex-direction: column; gap: 16px; }
+  .cs-feature {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 24px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .cs-feature-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--pink);
+    background: rgba(228,147,179,0.1);
+    border-radius: 6px;
+    padding: 4px 8px;
+    letter-spacing: .06em;
+    white-space: nowrap;
+  }
+  .cs-feature h4 { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .cs-feature p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin: 0; }
+
+  .cs-decision-list { margin: 24px 0; display: flex; flex-direction: column; gap: 12px; }
+  .cs-decision {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .cs-decision:last-child { border-bottom: none; }
+  .cs-decision-dot {
+    width: 8px; height: 8px;
+    background: var(--pink);
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .cs-decision p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; margin: 0; }
+  .cs-decision strong { color: var(--text); }
+
+  .cs-stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 32px 0;
+  }
+  @media (max-width: 540px) { .cs-stats-row { grid-template-columns: 1fr; } }
+  .cs-stat {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 24px 20px;
+    text-align: center;
+  }
+  .cs-stat-num {
+    font-family: var(--font-serif);
+    font-size: 2.2rem;
+    color: var(--pink);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .cs-stat-label { font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; }
+
+  /* Sidebar */
+  .cs-sidebar { position: sticky; top: 100px; }
+  .cs-sidebar-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+  .cs-sidebar-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+  }
+  .cs-toc { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .cs-toc li a {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    transition: color .2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cs-toc li a:hover { color: var(--pink); }
+  .cs-toc li a::before {
+    content: "";
+    width: 16px; height: 1px;
+    background: currentColor;
+    flex-shrink: 0;
+    opacity: 0.5;
+  }
+  .cs-tool-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cs-tool-pill {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    color: var(--text-muted);
+  }
+  .cs-live-btn {
+    display: block;
+    background: var(--pink);
+    color: #0c0a12;
+    font-weight: 700;
+    font-size: 0.88rem;
+    border-radius: var(--radius-sm);
+    padding: 14px 20px;
+    text-align: center;
+    transition: opacity .2s, transform .2s;
+    margin-bottom: 12px;
+  }
+  .cs-live-btn:hover { opacity: 0.88; transform: translateY(-1px); color: #0c0a12; }
+  .cs-back-btn {
+    display: block;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    border-radius: var(--radius-sm);
+    padding: 12px 20px;
+    text-align: center;
+    transition: border-color .2s, color .2s;
+    cursor: pointer;
+  }
+  .cs-back-btn:hover { border-color: var(--pink); color: var(--pink); }
+
+  .cs-footer-cta {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 48px;
+    text-align: center;
+    margin-bottom: 80px;
+  }
+  .cs-footer-cta h3 {
+    font-family: var(--font-serif);
+    font-size: 1.8rem;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .cs-footer-cta p { color: var(--text-muted); margin-bottom: 28px; }
+  .cs-footer-cta .btn { display: inline-block; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="index.html">Blessing.J</a>
+    <nav class="main-nav" id="mainNav">
+      <a href="index.html" class="nav-home">Home</a>
+      <a href="index.html#projects" class="nav-projects">Work</a>
+      <a href="index.html#contact" class="nav-contact">Contact</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode" title="Toggle light/dark mode">🌙</button>
+      <div class="header-photo"><img src="images/headshot.jpg" alt="Blessing Joshua" /></div>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="cs-hero">
+    <div class="wrap">
+      <a class="cs-back" href="index.html#projects">← Back to Work</a>
+      <div class="cs-label">Case Study · Live App · 2026</div>
+      <h1 class="cs-title">MealPilot</h1>
+      <p class="cs-subtitle">Designing a meal planning app for the Nigerian who has always been told healthy eating isn't for them.</p>
+      <div class="cs-meta-row">
+        <div class="cs-meta-item">
+          <span class="cs-meta-label">Role</span>
+          <span class="cs-meta-value">Solo Designer & Builder</span>
+        </div>
+        <div class="cs-meta-item">
+          <span class="cs-meta-label">Type</span>
+          <span class="cs-meta-value">Web App · Freemium</span>
+        </div>
+        <div class="cs-meta-item">
+          <span class="cs-meta-label">Market</span>
+          <span class="cs-meta-value">Nigeria</span>
+        </div>
+        <div class="cs-meta-item">
+          <span class="cs-meta-label">Stack</span>
+          <span class="cs-meta-value">HTML/CSS/JS · Supabase · GitHub Pages</span>
+        </div>
+        <div class="cs-meta-item">
+          <span class="cs-meta-label">Status</span>
+          <span class="cs-meta-value" style="color: var(--pink);">● Live</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cover image / placeholder -->
+  <div class="wrap">
+    <div class="cs-cover-placeholder">
+      <span class="cs-cover-app-name">MealPilot</span>
+      <span class="cs-cover-tagline">Nigerian Food · Smart Budget · Real Goals</span>
+    </div>
+  </div>
+
+  <!-- Body: main content + sidebar -->
+  <div class="wrap">
+    <div class="cs-body">
+
+      <!-- MAIN CONTENT -->
+      <div class="cs-main">
+
+        <!-- 01 THE PROBLEM -->
+        <div class="cs-section" id="problem">
+          <div class="cs-section-num">01 — The Problem</div>
+          <h2 class="cs-section-title">Built for the wrong kitchen</h2>
+          <p>Most meal planning apps are built for Western diets, Western budgets, and Western kitchens. They assume you have access to quinoa, a food processor, and the luxury of not worrying about how much you'll spend at the market this week.</p>
+          <p>For the average Nigerian, these apps are useless. And yet the problems they solve — what to cook, how to eat healthier, how to feed a child a balanced meal on a limited budget — are just as real, if not more urgent.</p>
+
+          <div class="cs-highlight">
+            <strong>The Proof</strong>
+            <p>A Nigerian commenter on LinkedIn said they didn't realise Nigeria had up to 50+ meals. That single comment — from someone inside the market — confirmed the gap MealPilot was built to close.</p>
+          </div>
+
+          <p>The specific gaps I identified through research:</p>
+          <div class="cs-needs-grid">
+            <div class="cs-need-item">
+              <span class="cs-need-icon">🥗</span>
+              <span class="cs-need-label">The health myth</span>
+              <span class="cs-need-desc">People genuinely believe jollof rice and egusi can't fit into a diet plan. Nigerian food has been written off as "too carb-heavy" to be healthy.</span>
+            </div>
+            <div class="cs-need-item">
+              <span class="cs-need-icon">💸</span>
+              <span class="cs-need-label">Budget paralysis</span>
+              <span class="cs-need-desc">Staring at ₦3,000 and not knowing what meal is actually possible with that amount — for someone eating to survive, not to plan.</span>
+            </div>
+            <div class="cs-need-item">
+              <span class="cs-need-icon">🎒</span>
+              <span class="cs-need-label">Lunchbox stress</span>
+              <span class="cs-need-desc">Parents defaulting to whatever is quick, with no framework for nutrition on a limited budget. The goal is to feed the child — nutrition feels like a luxury.</span>
+            </div>
+            <div class="cs-need-item">
+              <span class="cs-need-icon">💪</span>
+              <span class="cs-need-label">The gym gap</span>
+              <span class="cs-need-desc">Fitness-conscious Nigerians forced to choose between eating local and hitting their macros. No app bridged the two.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 02 THE USER -->
+        <div class="cs-section" id="user">
+          <div class="cs-section-num">02 — The User</div>
+          <h2 class="cs-section-title">Meet Bola</h2>
+          <p>To keep the design focused, I built MealPilot around one anchor user — someone who sits in the middle of the Nigerian income spectrum. Not the most vulnerable, not the most comfortable, but deeply real.</p>
+
+          <div class="cs-user-card">
+            <div class="cs-user-name">Bola, 34 · Lagos</div>
+            <span class="cs-user-tag">Primary Persona</span>
+            <p>She recently quit her 9-to-5 to reskill for the modern job market. She's watching her budget closely, wants to eat well and stay healthy, but doesn't have the bandwidth to figure out what to cook every day. She's not looking for a Western diet app. She wants something that understands her kitchen, her wallet, and her taste.</p>
+          </div>
+
+          <p>Bola isn't just one person. She represents four distinct user needs that MealPilot is built to serve — and the product earns its "for everyone" positioning because of how it's structured, not through vague generality.</p>
+        </div>
+
+        <!-- 03 RESEARCH -->
+        <div class="cs-section" id="research">
+          <div class="cs-section-num">03 — Research</div>
+          <h2 class="cs-section-title">How I found the gap</h2>
+          <p>MealPilot wasn't built from assumption. The insight came from four overlapping sources that gave me both emotional truth and pattern recognition.</p>
+
+          <div class="cs-research-grid">
+            <div class="cs-research-item">
+              <span class="label">Personal Experience</span>
+              <p>I lived this problem. The daily friction of Nigerian meal planning — what to cook, what it costs, whether it fits any health goal — is something I know firsthand.</p>
+            </div>
+            <div class="cs-research-item">
+              <span class="label">Friends & Family</span>
+              <p>Conversations revealed patterns across income levels: the budget anxiety, the diet guilt, the lunchbox default, the market maths done in your head every morning.</p>
+            </div>
+            <div class="cs-research-item">
+              <span class="label">Classroom Observation</span>
+              <p>Years of teaching showed me how parents approached feeding children on limited budgets. Nutrition was often the first casualty when money was tight.</p>
+            </div>
+            <div class="cs-research-item">
+              <span class="label">Social Media Research</span>
+              <p>Comment sections, Twitter/X threads, and Facebook groups surfaced recurring pain points that crossed income levels — especially around healthy eating and Nigerian food.</p>
+            </div>
+          </div>
+
+          <p>What became clear: this wasn't a niche problem. It was a universal Nigerian experience with no product built specifically for it.</p>
+        </div>
+
+        <!-- 04 SOLUTION -->
+        <div class="cs-section" id="solution">
+          <div class="cs-section-num">04 — The Solution</div>
+          <h2 class="cs-section-title">One app, four user realities</h2>
+          <p>MealPilot is a Nigerian meal planning web app with four core sections — each targeting a specific user need, but all accessible from the same product. The goal: a place where the struggling and the comfortable both find something made for them.</p>
+
+          <div class="cs-features-list">
+            <div class="cs-feature">
+              <span class="cs-feature-num">01</span>
+              <div>
+                <h4>Recipe Library — 50+ Nigerian Meals</h4>
+                <p>A proper browsable library, not just a list of dishes. Ingredients, methods, and nutritional framing — challenging the myth that Nigerian food can't be varied or healthy.</p>
+              </div>
+            </div>
+            <div class="cs-feature">
+              <span class="cs-feature-num">02</span>
+              <div>
+                <h4>Healthy & Diet / Gym Mode</h4>
+                <p>Meal plans and recipe filters built around Nigerian ingredients — for users actively trying to lose weight, manage health conditions, or support a fitness routine. No substituting ogbono with kale.</p>
+              </div>
+            </div>
+            <div class="cs-feature">
+              <span class="cs-feature-num">03</span>
+              <div>
+                <h4>Kids Lunchbox</h4>
+                <p>A dedicated section for parents. Simple, nutritious, budget-appropriate meal ideas for school lunchboxes — designed for the average Nigerian parent feeding a child, not curating an Instagram post.</p>
+              </div>
+            </div>
+            <div class="cs-feature">
+              <span class="cs-feature-num">04</span>
+              <div>
+                <h4>Budget Tool & Spend Tracker</h4>
+                <p>The feature that makes MealPilot genuinely unique. Users input what they have — financially or as ingredients at home — and get meal suggestions that work within that constraint. "What can I make with ₦2,500 and the tomatoes in my kitchen?" MealPilot answers that.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 05 DESIGN DECISIONS -->
+        <div class="cs-section" id="decisions">
+          <div class="cs-section-num">05 — Design Decisions</div>
+          <h2 class="cs-section-title">The choices that shaped the product</h2>
+
+          <div class="cs-decision-list">
+            <div class="cs-decision">
+              <div class="cs-decision-dot"></div>
+              <p><strong>Freemium per-card lock model.</strong> Core browsing is free; premium content is unlocked per card, not as a full subscription. Lower barrier to entry for budget-conscious users — the people who need the budget tool most aren't the ones who can afford a monthly subscription easily.</p>
+            </div>
+            <div class="cs-decision">
+              <div class="cs-decision-dot"></div>
+              <p><strong>"~₦X,XXX to make" cost wording.</strong> Honest, approximate pricing on every recipe. Nobody is surprised at the market. The tilde matters — it signals realism, not false precision.</p>
+            </div>
+            <div class="cs-decision">
+              <div class="cs-decision-dot"></div>
+              <p><strong>Dark mode with custom logo.</strong> Designed to feel modern and credible — not like a government nutrition pamphlet. Nigerian food deserved a product that looked as good as the food itself.</p>
+            </div>
+            <div class="cs-decision">
+              <div class="cs-decision-dot"></div>
+              <p><strong>Supabase auth + row-level security.</strong> Secure, scalable login that supports the freemium unlock model without overengineering. Premium access is enforced at the database level.</p>
+            </div>
+            <div class="cs-decision">
+              <div class="cs-decision-dot"></div>
+              <p><strong>Single web app, no install required.</strong> Works on any phone browser. No Play Store friction for users with limited device storage — a real constraint for many Nigerian users.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 06 RESULTS -->
+        <div class="cs-section" id="results">
+          <div class="cs-section-num">06 — Where It Stands</div>
+          <h2 class="cs-section-title">Live and validated</h2>
+
+          <div class="cs-stats-row">
+            <div class="cs-stat">
+              <span class="cs-stat-num">50+</span>
+              <span class="cs-stat-label">Nigerian recipes in the library</span>
+            </div>
+            <div class="cs-stat">
+              <span class="cs-stat-num">4</span>
+              <span class="cs-stat-label">Distinct user categories served</span>
+            </div>
+            <div class="cs-stat">
+              <span class="cs-stat-num">Live</span>
+              <span class="cs-stat-label">Deployed & accessible now</span>
+            </div>
+          </div>
+
+          <p>MealPilot is live and actively being expanded. The LinkedIn response at launch — including from Nigerians who were surprised by the breadth of the recipe library — validated the core insight: there was a real gap, and users felt it immediately when shown something actually built for them.</p>
+
+          <div class="cs-highlight">
+            <strong>The Signal</strong>
+            <p>When a Nigerian says "I didn't realise we had this many meals" — that's not embarrassing. That's product-market fit evidence. The gap wasn't just in the app; it was in how Nigerian food had been represented digitally.</p>
+          </div>
+        </div>
+
+        <!-- 07 REFLECTION -->
+        <div class="cs-section" id="reflection">
+          <div class="cs-section-num">07 — Reflection</div>
+          <h2 class="cs-section-title">What I learned</h2>
+          <p>The most important design insight from MealPilot: solving for the average user doesn't mean building a lesser product. It means building a more honest one.</p>
+          <p>When you design for Bola — the person watching her budget, trying to eat well, feeding her child, figuring out her next move — you end up with a product that the comfortable user also finds useful. The reverse is rarely true.</p>
+          <p>MealPilot also showed me that AI-augmented building — using AI to accelerate ideation, content generation, and UI decisions while keeping human judgment central — produces faster, more considered results than either approach alone. The thinking still has to be yours. The tools just remove the friction between having an idea and seeing it work.</p>
+        </div>
+
+      </div>
+      <!-- END MAIN CONTENT -->
+
+      <!-- SIDEBAR -->
+      <aside class="cs-sidebar">
+        <div class="cs-sidebar-card">
+          <div class="cs-sidebar-title">Contents</div>
+          <ul class="cs-toc">
+            <li><a href="#problem">The Problem</a></li>
+            <li><a href="#user">The User</a></li>
+            <li><a href="#research">Research</a></li>
+            <li><a href="#solution">The Solution</a></li>
+            <li><a href="#decisions">Design Decisions</a></li>
+            <li><a href="#results">Results</a></li>
+            <li><a href="#reflection">Reflection</a></li>
+          </ul>
+        </div>
+
+        <div class="cs-sidebar-card">
+          <div class="cs-sidebar-title">Built With</div>
+          <div class="cs-tool-pills">
+            <span class="cs-tool-pill">HTML/CSS/JS</span>
+            <span class="cs-tool-pill">Supabase Auth</span>
+            <span class="cs-tool-pill">Row Level Security</span>
+            <span class="cs-tool-pill">GitHub Pages</span>
+            <span class="cs-tool-pill">Figma</span>
+          </div>
+        </div>
+
+        <a href="https://lorvyn-core.github.io/MealPilot/" target="_blank" rel="noopener noreferrer" class="cs-live-btn">Open Live App →</a>
+        <a href="index.html#projects" class="cs-back-btn">← All Projects</a>
+      </aside>
+
+    </div>
+
+    <!-- FOOTER CTA -->
+    <div class="cs-footer-cta">
+      <h3>Have a similar problem to solve?</h3>
+      <p>I design and build products rooted in how Nigerians actually live — from first idea to live deployment.</p>
+      <a href="index.html#contact" class="btn btn-primary">Get In Touch →</a>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Blessing.J</div>
+        <p class="desc">Benin City-based UI/UX designer and no-code builder, helping founders ship clean, usable products — with a focus on tools built around how Nigerians actually live, shop, and learn.</p>
+      </div>
+      <div>
+        <div class="col-title">Navigation</div>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#projects">Work</a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="col-title">Core Craft</div>
+        <ul>
+          <li>UI/UX Design</li>
+          <li>No-Code Builds</li>
+          <li>Virtual Assistance</li>
+          <li>Social Media Strategy</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Blessing Joshua</span>
+      <span>Built with care in Benin City</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Theme toggle
+  const toggle = document.getElementById("themeToggle");
+  function getTheme() {
+    try { return localStorage.getItem("portfolio-theme") || "dark"; } catch(e) { return "dark"; }
+  }
+  function applyTheme(t) {
+    if (t === "light") {
+      document.documentElement.setAttribute("data-theme", "light");
+      toggle.textContent = "☀️";
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+      toggle.textContent = "🌙";
+    }
+  }
+  applyTheme(getTheme());
+  toggle.addEventListener("click", () => {
+    const next = getTheme() === "dark" ? "light" : "dark";
+    try { localStorage.setItem("portfolio-theme", next); } catch(e) {}
+    applyTheme(next);
+  });
+
+  // Mobile nav toggle
+  const navToggle = document.getElementById("navToggle");
+  const mainNav = document.getElementById("mainNav");
+  navToggle?.addEventListener("click", () => mainNav.classList.toggle("open"));
+
+  // Active TOC on scroll
+  const sections = document.querySelectorAll(".cs-section[id]");
+  const tocLinks = document.querySelectorAll(".cs-toc a");
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(l => l.style.color = "");
+        const active = document.querySelector(`.cs-toc a[href="#${entry.target.id}"]`);
+        if (active) active.style.color = "var(--pink)";
+      }
+    });
+  }, { rootMargin: "-20% 0px -70% 0px" });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
