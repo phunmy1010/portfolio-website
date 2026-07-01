@@ -1,5 +1,23 @@
 const PROJECTS = [
   {
+    id: "quickcart",
+    category: "UX Case Study · Prototype",
+    year: "2026",
+    image: "images/quickcart-cover.jpeg",
+    title: "QuickCart",
+    role: "Solo UI/UX Designer",
+    tags: ["GROCERY DELIVERY", "LAGOS MARKET", "USABILITY TESTING"],
+    description: "A grocery delivery app for busy Lagos professionals — designed grocery-first against Glovo and Chowdeck, with a full clickable prototype covering Home, Search, Cart, and live order tracking.",
+    challenge: "Existing delivery apps in Lagos treat groceries as an afterthought — bundled in with food and parcels, with unclear delivery times and cluttered feeds.",
+    solution: "Designed a dedicated grocery-first flow with a fast reorder-friendly structure, transparent fees, and prominent delivery ETAs, validated through usability testing.",
+    tools: ["Figma", "Google AI Studio", "html.to.design", "Behance"],
+    overview: "QuickCart is a grocery delivery app case study built around a Lagos-based persona, benchmarked directly against Glovo and Chowdeck.",
+    discovery: "Competitive analysis and persona research showed users tolerate longer delivery times if the ETA is accurate, and abandon apps that bury groceries under food and parcel listings.",
+    results: "Shipped 4 high-fidelity screens, a full clickable Figma prototype, and iterated the checkout and payment flow based on real usability testing feedback.",
+    live: "quickcart.html",
+    caseStudyPage: "quickcart.html"
+  },
+  {
     id: "mealpilot",
     category: "Live App · No-Code Build",
     year: "2026",

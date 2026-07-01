@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>QuickCart Case Study — Blessing Joshua</title>
+<meta name="description" content="How I designed QuickCart — a grocery delivery app built for busy Lagos professionals, from research through a live clickable prototype." />
+<link rel="stylesheet" href="styles.css" />
+<script>
+  (function() {
+    try {
+      var saved = localStorage.getItem("portfolio-theme");
+      var theme = saved === "light" || saved === "dark"
+        ? saved
+        : (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+      if (theme === "light") document.documentElement.setAttribute("data-theme", "light");
+    } catch (e) {}
+  })();
+</script>
+<style>
+  /* ── Case Study Page Specific Styles ── */
+  .cs-hero {
+    padding: 120px 0 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cs-hero::before {
+    content: "";
+    position: absolute;
+    top: -120px; left: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(228,147,179,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cs-hero::after {
+    content: "";
+    position: absolute;
+    top: 0; right: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(155,126,224,0.10) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cs-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 48px;
+    transition: color .2s;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  .cs-back:hover { color: var(--pink); }
+  .cs-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    color: var(--pink);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .cs-title {
+    font-family: var(--font-serif);
+    font-size: clamp(2.6rem, 6vw, 4.2rem);
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+  .cs-subtitle {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    max-width: 620px;
+    line-height: 1.7;
+    margin-bottom: 48px;
+    font-style: italic;
+  }
+  .cs-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    margin-bottom: 56px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cs-meta-item { display: flex; flex-direction: column; gap: 4px; }
+  .cs-meta-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .cs-meta-value { font-size: 0.95rem; color: var(--text); font-weight: 500; }
+
+  .cs-cover {
+    width: 100%;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    margin-bottom: 80px;
+    background: var(--bg-card);
+    aspect-ratio: 16/7;
+    object-fit: cover;
+    display: block;
+    overflow: hidden;
+  }
+
+  .cs-body {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 64px;
+    align-items: start;
+    margin-bottom: 80px;
+  }
+  @media (max-width: 768px) {
+    .cs-body { grid-template-columns: 1fr; }
+    .cs-sidebar { order: -1; }
+  }
+
+  .cs-section { margin-bottom: 64px; }
+  .cs-section-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--pink);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .cs-section-title {
+    font-family: var(--font-serif);
+    font-size: 1.8rem;
+    color: var(--text);
+    margin-bottom: 20px;
+    line-height: 1.2;
+  }
+  .cs-section p {
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin-bottom: 16px;
+    font-size: 1rem;
+  }
+  .cs-section p:last-child { margin-bottom: 0; }
+
+  .cs-highlight {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--pink);
+    border-radius: var(--radius-sm);
+    padding: 24px 28px;
+    margin: 32px 0;
+  }
+  .cs-highlight strong {
+    color: var(--pink);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 10px;
+  }
+  .cs-highlight p {
+    color: var(--text);
+    margin: 0;
+    font-style: italic;
+    line-height: 1.7;
+  }
+
+  .cs-user-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin: 32px 0;
+  }
+  .cs-user-name {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .cs-user-tag {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--violet);
+    margin-bottom: 16px;
+    display: block;
+  }
+  .cs-user-card p { color: var(--text-muted); line-height: 1.7; margin: 0; font-size: 0.95rem; }
+
+  .cs-needs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  @media (max-width: 540px) { .cs-needs-grid { grid-template-columns: 1fr; } }
+  .cs-need-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .cs-need-icon { font-size: 1.4rem; }
+  .cs-need-label { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+  .cs-need-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; }
+
+  .cs-research-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  @media (max-width: 540px) { .cs-research-grid { grid-template-columns: 1fr; } }
+  .cs-research-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+  }
+  .cs-research-item .label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--violet);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .cs-research-item p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin: 0; }
+
+  .cs-features-list { margin: 24px 0; display: flex; flex-direction: column; gap: 16px; }
+  .cs-feature {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 24px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .cs-feature-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--pink);
+    background: rgba(228,147,179,0.1);
+    border-radius: 6px;
+    padding: 4px 8px;
+    letter-spacing: .06em;
+    white-space: nowrap;
+  }
+  .cs-feature h4 { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .cs-feature p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin: 0; }
+
+  .cs-decision-list { margin: 24px 0; display: flex; flex-direction: column; gap: 12px; }
+  .cs-decision {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .cs-decision:last-child { border-bottom: none; }
+  .cs-decision-dot {
+    width: 8px; height: 8px;
+    background: var(--pink);
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .cs-decision p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; margin: 0; }
+  .cs-decision strong { color: var(--text); }
+
+  .cs-stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 32px 0;
+  }
+  @media (max-width: 540px) { .cs-stats-row { grid-template-columns: 1fr; } }
+  .cs-stat {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 24px 20px;
+    text-align: center;
+  }
+  .cs-stat-num {
+    font-family: var(--font-serif);
+    font-size: 2.2rem;
+    color: var(--pink);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .cs-stat-label { font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; }
+
+  .cs-gallery {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .cs-gallery img {
+    width: 100%;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    display: block;
+  }
+  .cs-gallery-caption {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    text-align: center;
+    margin-top: -4px;
+  }
+
+  .cs-proto-embed {
+    width: 100%;
+    aspect-ratio: 16/10;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    margin: 24px 0;
+  }
+
+  /* Sidebar */
+  .cs-sidebar { position: sticky; top: 100px; }
+  .cs-sidebar-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+  .cs-sidebar-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+  }
+  .cs-toc { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .cs-toc li a {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    transition: color .2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cs-toc li a:hover { color: var(--pink); }
+  .cs-toc li a::before {
+    content: "";
+    width: 16px; height: 1px;
+    background: currentColor;
+    flex-shrink: 0;
+    opacity: 0.5;
+  }
+  .cs-tool-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cs-tool-pill {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    color: var(--text-muted);
+  }
+  .cs-live-btn {
+    display: block;
+    background: var(--pink);
+    color: #0c0a12;
+    font-weight: 700;
+    font-size: 0.88rem;
+    border-radius: var(--radius-sm);
+    padding: 14px 20px;
+    text-align: center;
+    transition: opacity .2s, transform .2s;
+    margin-bottom: 12px;
+  }
+  .cs-live-btn:hover { opacity: 0.88; transform: translateY(-1px); color: #0c0a12; }
+  .cs-live-btn.secondary {
+    background: transparent;
+    border: 1px solid var(--pink);
+    color: var(--pink);
+  }
+  .cs-live-btn.secondary:hover { color: var(--pink); background: rgba(228,147,179,0.08); }
+  .cs-back-btn {
+    display: block;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    border-radius: var(--radius-sm);
+    padding: 12px 20px;
+    text-align: center;
+    transition: border-color .2s, color .2s;
+    cursor: pointer;
+  }
+  .cs-back-btn:hover { border-color: var(--pink); color: var(--pink); }
+
+  .cs-footer-cta {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 48px;
+    text-align: center;
+    margin-bottom: 80px;
+  }
+  .cs-footer-cta h3 {
+    font-family: var(--font-serif);
+    font-size: 1.8rem;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .cs-footer-cta p { color: var(--text-muted); margin-bottom: 28px; }
+  .cs-footer-cta .btn { display: inline-block; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="index.html">Blessing.J</a>
+    <nav class="main-nav" id="mainNav">
+      <a href="index.html" class="nav-home">Home</a>
+      <a href="index.html#projects" class="nav-projects">Work</a>
+      <a href="index.html#contact" class="nav-contact">Contact</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode" title="Toggle light/dark mode">🌙</button>
+      <div class="header-photo"><img src="images/headshot.jpg" alt="Blessing Joshua" /></div>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="cs-hero">
+    <div class="wrap">
+      <a class="cs-back" href="index.html#projects">← Back to Work</a>
+      <div class="cs-label">Case Study · UI/UX · 2026</div>
+      <h1 class="cs-title">QuickCart</h1>
+      <p class="cs-subtitle">Designing a grocery delivery app for the Lagos professional who has no time to shop, but every reason to expect it done right.</p>
+      <div class="cs-meta-row">
+        <div class="cs-meta-item">
+          <span class="cs-meta-label">Role</span>
+          <span class="cs-meta-value">Solo UI/UX Designer</span>
+        </div>
+        <div class="cs-meta-item">
+          <span class="cs-meta-label">Type</span>
+          <span class="cs-meta-value">Mobile App · Case Study</span>
+        </div>
+        <div class="cs-meta-item">
+          <span class="cs-meta-label">Market</span>
+          <span class="cs-meta-value">Lagos, Nigeria</span>
+        </div>
+        <div class="cs-meta-item">
+          <span class="cs-meta-label">Stack</span>
+          <span class="cs-meta-value">Figma · Google AI Studio · html.to.design</span>
+        </div>
+        <div class="cs-meta-item">
+          <span class="cs-meta-label">Status</span>
+          <span class="cs-meta-value" style="color: var(--pink);">● Prototype Live</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cover image -->
+  <div class="wrap">
+    <img class="cs-cover" src="images/quickcart-cover.jpeg" alt="QuickCart — Home, Search, Cart, and Track Order screens" />
+  </div>
+
+  <!-- Body: main content + sidebar -->
+  <div class="wrap">
+    <div class="cs-body">
+
+      <!-- MAIN CONTENT -->
+      <div class="cs-main">
+
+        <!-- 01 THE PROBLEM -->
+        <div class="cs-section" id="problem">
+          <div class="cs-section-num">01 — The Problem</div>
+          <h2 class="cs-section-title">Groceries, treated as an afterthought</h2>
+          <p>Busy urban professionals in Lagos need a fast, reliable, and uncluttered way to order everyday groceries. Existing delivery apps don't give them that — Glovo bundles groceries in with food, parcels, and pharmacy in one dense, ad-heavy feed, while Chowdeck is built almost entirely around hot meals, not a stocked pantry.</p>
+          <p>The result: slower checkout, unclear delivery times, and a shopping experience that feels like it was bolted on, not designed for.</p>
+
+          <div class="cs-highlight">
+            <strong>The Problem Statement</strong>
+            <p>"Busy urban professionals in Lagos need a fast, reliable, and uncluttered way to order everyday groceries — because existing delivery apps are optimized for food and parcels first, groceries second."</p>
+          </div>
+        </div>
+
+        <!-- 02 THE USER -->
+        <div class="cs-section" id="user">
+          <div class="cs-section-num">02 — The User</div>
+          <h2 class="cs-section-title">Meet Amaka</h2>
+          <p>QuickCart was designed around one grounded persona — a working professional who represents the core weekly-grocery habit the product needed to serve well.</p>
+
+          <div class="cs-user-card">
+            <div class="cs-user-name">Amaka Okonkwo, 29 · Ikeja, Lagos</div>
+            <span class="cs-user-tag">Primary Persona · Marketing Executive</span>
+            <p>Works 9am–6pm with a 1–2 hour daily commute, lives alone, and shops for groceries weekly. She doesn't want an app that makes her rebuild her cart from scratch every time — she wants to restock quickly, trust what arrives, and know exactly when it's coming.</p>
+          </div>
+
+          <div class="cs-highlight">
+            <strong>In her words</strong>
+            <p>"I just want to reorder what I got last week in under a minute."</p>
+          </div>
+        </div>
+
+        <!-- 03 RESEARCH -->
+        <div class="cs-section" id="research">
+          <div class="cs-section-num">03 — Research</div>
+          <h2 class="cs-section-title">What existing apps get wrong</h2>
+          <p>A direct competitive read against Glovo and Chowdeck — QuickCart's two closest points of comparison in the Lagos delivery market — surfaced a consistent theme: neither app was actually built around groceries as the primary use case.</p>
+
+          <div class="cs-research-grid">
+            <div class="cs-research-item">
+              <span class="label">Category Focus</span>
+              <p>Glovo mixes food, groceries, parcels, and pharmacy in one feed. Chowdeck is built almost entirely for hot food. Neither gives groceries a dedicated, uncluttered home.</p>
+            </div>
+            <div class="cs-research-item">
+              <span class="label">Reorder Behavior</span>
+              <p>Grocery shopping is repetitive by nature — the same items, week after week. Generic order history isn't optimized for that habit the way a dedicated reorder flow could be.</p>
+            </div>
+            <div class="cs-research-item">
+              <span class="label">Delivery Certainty</span>
+              <p>Users tolerate a 30–40 minute wait if the ETA is accurate. Vague delivery windows, more than slow delivery itself, are what erode trust.</p>
+            </div>
+            <div class="cs-research-item">
+              <span class="label">Payment Habits</span>
+              <p>Card and wallet payments alone don't match how Lagos shoppers actually pay — Pay on Delivery needed equal visual weight, not a buried secondary option.</p>
+            </div>
+          </div>
+
+          <p>These findings shaped a clear opportunity: build the grocery-first, trust-forward experience that neither competitor prioritizes.</p>
+        </div>
+
+        <!-- 04 THE SOLUTION -->
+        <div class="cs-section" id="solution">
+          <div class="cs-section-num">04 — The Solution</div>
+          <h2 class="cs-section-title">Four screens, one uncluttered flow</h2>
+          <p>QuickCart's core experience covers the full grocery journey — from opening the app to watching the delivery arrive — kept flat and shallow so nothing is more than two taps from Home.</p>
+
+          <div class="cs-features-list">
+            <div class="cs-feature">
+              <span class="cs-feature-num">01</span>
+              <div>
+                <h4>Home</h4>
+                <p>Categories, active promos, and popular items surfaced immediately — no digging required to start an order.</p>
+              </div>
+            </div>
+            <div class="cs-feature">
+              <span class="cs-feature-num">02</span>
+              <div>
+                <h4>Search</h4>
+                <p>Fast product search across categories and stores, built for someone who already knows what they want.</p>
+              </div>
+            </div>
+            <div class="cs-feature">
+              <span class="cs-feature-num">03</span>
+              <div>
+                <h4>Cart</h4>
+                <p>Items grouped by store with a fully transparent order summary — subtotal, delivery fee, service fee, and total, before checkout.</p>
+              </div>
+            </div>
+            <div class="cs-feature">
+              <span class="cs-feature-num">04</span>
+              <div>
+                <h4>Track Order</h4>
+                <p>Live delivery tracking with real-time status and an accurate ETA — the single biggest trust signal identified in research.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="cs-gallery">
+            <img src="images/quickcart-flow.jpeg" alt="QuickCart primary user flow diagram: Home to Search to Cart to Track Order" />
+            <span class="cs-gallery-caption">Primary user flow — Home → Search → Cart → Track Order</span>
+          </div>
+        </div>
+
+        <!-- 05 DESIGN DECISIONS -->
+        <div class="cs-section" id="decisions">
+          <div class="cs-section-num">05 — Design Decisions</div>
+          <h2 class="cs-section-title">The choices that shaped the product</h2>
+
+          <div class="cs-decision-list">
+            <div class="cs-decision">
+              <div class="cs-decision-dot"></div>
+              <p><strong>Green over red or orange.</strong> Both Glovo and Chowdeck lead with warm, food-app colors. QuickCart's primary green (#2E7D32) signals freshness and trust, and immediately reads as "grocery," not "takeout."</p>
+            </div>
+            <div class="cs-decision">
+              <div class="cs-decision-dot"></div>
+              <p><strong>Amber reserved for action only.</strong> The accent color (#FF8A00) is used strictly for CTAs, badges, and prices — kept scarce so it always draws the eye to what matters.</p>
+            </div>
+            <div class="cs-decision">
+              <div class="cs-decision-dot"></div>
+              <p><strong>ETA surfaced early, not buried.</strong> Delivery time appears at the cart stage and again on the dedicated Track Order screen, directly answering the research finding that certainty matters more than speed.</p>
+            </div>
+            <div class="cs-decision">
+              <div class="cs-decision-dot"></div>
+              <p><strong>Maximum 3–4 colors per screen.</strong> A deliberate constraint against the cluttered, ad-heavy feel of competitor apps — every screen stays calm and scannable.</p>
+            </div>
+            <div class="cs-decision">
+              <div class="cs-decision-dot"></div>
+              <p><strong>AI-generated screens, hand-finished.</strong> Initial high-fidelity screens were generated in Google AI Studio and imported into Figma via html.to.design — but every screen needed a manual consistency pass on spacing and color before it read as one cohesive product.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 06 PROTOTYPE -->
+        <div class="cs-section" id="prototype">
+          <div class="cs-section-num">06 — Prototype</div>
+          <h2 class="cs-section-title">Try it live</h2>
+          <p>The full clickable prototype covers Home → Search → Cart → Checkout → Track Order. Interact with it directly below, or open it in Figma.</p>
+
+          <iframe class="cs-proto-embed" src="https://www.figma.com/proto/w548eoqRGVgc2rGBf1TTIw/QUICKCART?node-id=38-189&p=f&t=1UP2tenAFqrjpsSx-1&scaling=scale-down&content-scaling=responsive&page-id=0%3A1&starting-point-node-id=38%3A189" allowfullscreen></iframe>
+        </div>
+
+        <!-- 07 TESTING & ITERATION -->
+        <div class="cs-section" id="testing">
+          <div class="cs-section-num">07 — Testing & Iteration</div>
+          <h2 class="cs-section-title">What testing changed</h2>
+          <p>Task-based usability testing on the clickable prototype asked users to search for fresh tomatoes, add them to cart, check out, and track the order — the full core loop, end to end.</p>
+
+          <div class="cs-decision-list">
+            <div class="cs-decision">
+              <div class="cs-decision-dot"></div>
+              <p><strong>ETA moved higher in checkout.</strong> Users said delivery time felt buried — it now sits directly next to the delivery time toggle, impossible to miss.</p>
+            </div>
+            <div class="cs-decision">
+              <div class="cs-decision-dot"></div>
+              <p><strong>Pay on Delivery given equal weight.</strong> Several users missed it entirely when it was a secondary link — it's now styled with the same visual weight as card payment.</p>
+            </div>
+            <div class="cs-decision">
+              <div class="cs-decision-dot"></div>
+              <p><strong>Clearer add-to-cart icon.</strong> The original "+" on product cards was ambiguous. It was replaced with an explicit cart-plus icon.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 08 RESULTS -->
+        <div class="cs-section" id="results">
+          <div class="cs-section-num">08 — Where It Stands</div>
+          <h2 class="cs-section-title">Prototyped and validated</h2>
+
+          <div class="cs-stats-row">
+            <div class="cs-stat">
+              <span class="cs-stat-num">4</span>
+              <span class="cs-stat-label">Core high-fidelity screens shipped</span>
+            </div>
+            <div class="cs-stat">
+              <span class="cs-stat-num">2</span>
+              <span class="cs-stat-label">Direct competitors benchmarked</span>
+            </div>
+            <div class="cs-stat">
+              <span class="cs-stat-num">Live</span>
+              <span class="cs-stat-label">Clickable prototype, testable now</span>
+            </div>
+          </div>
+
+          <p>QuickCart is a complete, tested case study — from problem statement through a validated, iterated prototype — documenting both the final UI and the reasoning behind every major decision along the way.</p>
+        </div>
+
+        <!-- 09 REFLECTION -->
+        <div class="cs-section" id="reflection">
+          <div class="cs-section-num">09 — Reflection</div>
+          <h2 class="cs-section-title">What I learned</h2>
+          <p>Keeping visual consistency across AI-generated screens before the Figma cleanup pass was the biggest challenge on this project — each generation needed a manual pass to align spacing and color exactly, even with a shared design system prompt.</p>
+          <p>The clearest lesson from testing: small trust signals — a freshness note, an accurate ETA — mattered more to participants than any amount of visual polish. Grocery delivery is fundamentally a trust product before it's a visual one.</p>
+          <p>QuickCart also reinforced something I'm carrying into every build now: AI tools are excellent at generating a strong starting point fast, but the judgment of what's actually consistent, trustworthy, and usable still has to come from deliberate design decisions — not the first generation.</p>
+        </div>
+
+      </div>
+      <!-- END MAIN CONTENT -->
+
+      <!-- SIDEBAR -->
+      <aside class="cs-sidebar">
+        <div class="cs-sidebar-card">
+          <div class="cs-sidebar-title">Contents</div>
+          <ul class="cs-toc">
+            <li><a href="#problem">The Problem</a></li>
+            <li><a href="#user">The User</a></li>
+            <li><a href="#research">Research</a></li>
+            <li><a href="#solution">The Solution</a></li>
+            <li><a href="#decisions">Design Decisions</a></li>
+            <li><a href="#prototype">Prototype</a></li>
+            <li><a href="#testing">Testing & Iteration</a></li>
+            <li><a href="#results">Results</a></li>
+            <li><a href="#reflection">Reflection</a></li>
+          </ul>
+        </div>
+
+        <div class="cs-sidebar-card">
+          <div class="cs-sidebar-title">Built With</div>
+          <div class="cs-tool-pills">
+            <span class="cs-tool-pill">Figma</span>
+            <span class="cs-tool-pill">Google AI Studio</span>
+            <span class="cs-tool-pill">html.to.design</span>
+            <span class="cs-tool-pill">Behance</span>
+          </div>
+        </div>
+
+        <a href="https://www.figma.com/proto/w548eoqRGVgc2rGBf1TTIw/QUICKCART?node-id=38-189&p=f&t=1UP2tenAFqrjpsSx-1&scaling=scale-down&content-scaling=responsive&page-id=0%3A1&starting-point-node-id=38%3A189" target="_blank" rel="noopener noreferrer" class="cs-live-btn">Open Prototype →</a>
+        <a href="https://www.behance.net/gallery/252011199/QuickCart-Grocery-Delivery-App" target="_blank" rel="noopener noreferrer" class="cs-live-btn secondary">View on Behance →</a>
+        <a href="index.html#projects" class="cs-back-btn">← All Projects</a>
+      </aside>
+
+    </div>
+
+    <!-- FOOTER CTA -->
+    <div class="cs-footer-cta">
+      <h3>Have a similar problem to solve?</h3>
+      <p>I design and build products rooted in how Nigerians actually live — from first idea to live deployment.</p>
+      <a href="index.html#contact" class="btn btn-primary">Get In Touch →</a>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Blessing.J</div>
+        <p class="desc">Benin City-based UI/UX designer and no-code builder, helping founders ship clean, usable products — with a focus on tools built around how Nigerians actually live, shop, and learn.</p>
+      </div>
+      <div>
+        <div class="col-title">Navigation</div>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#projects">Work</a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="col-title">Core Craft</div>
+        <ul>
+          <li>UI/UX Design</li>
+          <li>No-Code Builds</li>
+          <li>Virtual Assistance</li>
+          <li>Social Media Strategy</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Blessing Joshua</span>
+      <span>Built with care in Benin City</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Theme toggle
+  const toggle = document.getElementById("themeToggle");
+  function getTheme() {
+    try { return localStorage.getItem("portfolio-theme") || "dark"; } catch(e) { return "dark"; }
+  }
+  function applyTheme(t) {
+    if (t === "light") {
+      document.documentElement.setAttribute("data-theme", "light");
+      toggle.textContent = "☀️";
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+      toggle.textContent = "🌙";
+    }
+  }
+  applyTheme(getTheme());
+  toggle.addEventListener("click", () => {
+    const next = getTheme() === "dark" ? "light" : "dark";
+    try { localStorage.setItem("portfolio-theme", next); } catch(e) {}
+    applyTheme(next);
+  });
+
+  // Mobile nav toggle
+  const navToggle = document.getElementById("navToggle");
+  const mainNav = document.getElementById("mainNav");
+  navToggle?.addEventListener("click", () => mainNav.classList.toggle("open"));
+
+  // Active TOC on scroll
+  const sections = document.querySelectorAll(".cs-section[id]");
+  const tocLinks = document.querySelectorAll(".cs-toc a");
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(l => l.style.color = "");
+        const active = document.querySelector(`.cs-toc a[href="#${entry.target.id}"]`);
+        if (active) active.style.color = "var(--pink)";
+      }
+    });
+  }, { rootMargin: "-20% 0px -70% 0px" });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
