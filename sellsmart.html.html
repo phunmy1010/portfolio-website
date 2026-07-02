@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SellSmart NG Case Study — Blessing Joshua</title>
+<meta name="description" content="How I designed and built SellSmart NG — a smart business management app helping Nigerian entrepreneurs track sales, stock, pricing, and group savings in one place." />
+<link rel="stylesheet" href="styles.css" />
+<script>
+  (function() {
+    try {
+      var saved = localStorage.getItem("portfolio-theme");
+      var theme = saved === "light" || saved === "dark"
+        ? saved
+        : (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+      if (theme === "light") document.documentElement.setAttribute("data-theme", "light");
+    } catch (e) {}
+  })();
+</script>
+<style>
+  /* ── Case Study Page Specific Styles ── */
+  .cs-hero {
+    padding: 120px 0 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cs-hero::before {
+    content: "";
+    position: absolute;
+    top: -120px; left: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(228,147,179,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cs-hero::after {
+    content: "";
+    position: absolute;
+    top: 0; right: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(155,126,224,0.10) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cs-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 48px;
+    transition: color .2s;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  .cs-back:hover { color: var(--pink); }
+  .cs-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    color: var(--pink);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .cs-title {
+    font-family: var(--font-serif);
+    font-size: clamp(2.6rem, 6vw, 4.2rem);
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+  .cs-subtitle {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    max-width: 620px;
+    line-height: 1.7;
+    margin-bottom: 48px;
+    font-style: italic;
+  }
+  .cs-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    margin-bottom: 56px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cs-meta-item { display: flex; flex-direction: column; gap: 4px; }
+  .cs-meta-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .cs-meta-value { font-size: 0.95rem; color: var(--text); font-weight: 500; }
+
+  .cs-cover {
+    width: 100%;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    margin-bottom: 80px;
+    background: #0c0a12;
+    aspect-ratio: 16/7;
+    object-fit: cover;
+    display: block;
+    overflow: hidden;
+  }
+
+  .cs-body {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 64px;
+    align-items: start;
+    margin-bottom: 80px;
+  }
+  @media (max-width: 768px) {
+    .cs-body { grid-template-columns: 1fr; }
+    .cs-sidebar { order: -1; }
+  }
+
+  .cs-section { margin-bottom: 64px; }
+  .cs-section-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--pink);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .cs-section-title {
+    font-family: var(--font-serif);
+    font-size: 1.8rem;
+    color: var(--text);
+    margin-bottom: 20px;
+    line-height: 1.2;
+  }
+  .cs-section p {
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin-bottom: 16px;
+    font-size: 1rem;
+  }
+  .cs-section p:last-child { margin-bottom: 0; }
+
+  .cs-highlight {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--pink);
+    border-radius: var(--radius-sm);
+    padding: 24px 28px;
+    margin: 32px 0;
+  }
+  .cs-highlight strong {
+    color: var(--pink);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 10px;
+  }
+  .cs-highlight p {
+    color: var(--text);
+    margin: 0;
+    font-style: italic;
+    line-height: 1.7;
+  }
+
+  .cs-user-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin: 32px 0;
+  }
+  .cs-user-name {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .cs-user-tag {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--violet);
+    margin-bottom: 16px;
+    display: block;
+  }
+  .cs-user-card p { color: var(--text-muted); line-height: 1.7; margin: 0; font-size: 0.95rem; }
+
+  .cs-needs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  @media (max-width: 540px) { .cs-needs-grid { grid-template-columns: 1fr; } }
+  .cs-need-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .cs-need-icon { font-size: 1.4rem; }
+  .cs-need-label { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+  .cs-need-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; }
+
+  .cs-research-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  @media (max-width: 540px) { .cs-research-grid { grid-template-columns: 1fr; } }
+  .cs-research-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+  }
+  .cs-research-item .label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--violet);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .cs-research-item p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin: 0; }
+
+  .cs-features-list { margin: 24px 0; display: flex; flex-direction: column; gap: 16px; }
+  .cs-feature {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 24px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .cs-feature-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--pink);
+    background: rgba(228,147,179,0.1);
+    border-radius: 6px;
+    padding: 4px 8px;
+    letter-spacing: .06em;
+    white-space: nowrap;
+  }
+  .cs-feature h4 { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .cs-feature p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin: 0; }
+  .cs-feature img {
+    width: 100%;
+    max-width: 220px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    margin-top: 12px;
+    display: block;
+  }
+
+  .cs-decision-list { margin: 24px 0; display: flex; flex-direction: column; gap: 12px; }
+  .cs-decision {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .cs-decision:last-child { border-bottom: none; }
+  .cs-decision-dot {
+    width: 8px; height: 8px;
+    background: var(--pink);
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .cs-decision p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; margin: 0; }
+  .cs-decision strong { color: var(--text); }
+
+  .cs-stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 32px 0;
+  }
+  @media (max-width: 540px) { .cs-stats-row { grid-template-columns: 1fr; } }
+  .cs-stat {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 24px 20px;
+    text-align: center;
+  }
+  .cs-stat-num {
+    font-family: var(--font-serif);
+    font-size: 2.2rem;
+    color: var(--pink);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .cs-stat-label { font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; }
+
+  /* Sidebar */
+  .cs-sidebar { position: sticky; top: 100px; }
+  .cs-sidebar-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+  .cs-sidebar-title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+  }
+  .cs-toc { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .cs-toc li a {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    transition: color .2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cs-toc li a:hover { color: var(--pink); }
+  .cs-toc li a::before {
+    content: "";
+    width: 16px; height: 1px;
+    background: currentColor;
+    flex-shrink: 0;
+    opacity: 0.5;
+  }
+  .cs-tool-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cs-tool-pill {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    color: var(--text-muted);
+  }
+  .cs-live-btn {
+    display: block;
+    background: var(--pink);
+    color: #0c0a12;
+    font-weight: 700;
+    font-size: 0.88rem;
+    border-radius: var(--radius-sm);
+    padding: 14px 20px;
+    text-align: center;
+    transition: opacity .2s, transform .2s;
+    margin-bottom: 12px;
+  }
+  .cs-live-btn:hover { opacity: 0.88; transform: translateY(-1px); color: #0c0a12; }
+  .cs-back-btn {
+    display: block;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    border-radius: var(--radius-sm);
+    padding: 12px 20px;
+    text-align: center;
+    transition: border-color .2s, color .2s;
+    cursor: pointer;
+  }
+  .cs-back-btn:hover { border-color: var(--pink); color: var(--pink); }
+
+  .cs-footer-cta {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 48px;
+    text-align: center;
+    margin-bottom: 80px;
+  }
+  .cs-footer-cta h3 {
+    font-family: var(--font-serif);
+    font-size: 1.8rem;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .cs-footer-cta p { color: var(--text-muted); margin-bottom: 28px; }
+  .cs-footer-cta .btn { display: inline-block; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="index.html">Blessing.J</a>
+    <nav class="main-nav" id="mainNav">
+      <a href="index.html" class="nav-home">Home</a>
+      <a href="index.html#projects" class="nav-projects">Work</a>
+      <a href="index.html#contact" class="nav-contact">Contact</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode" title="Toggle light/dark mode">🌙</button>
+      <div class="header-photo"><img src="images/headshot.jpg" alt="Blessing Joshua" /></div>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="cs-hero">
+    <div class="wrap">
+      <a class="cs-back" href="index.html#projects">← Back to Work</a>
+      <div class="cs-label">Case Study · Live App · 2026</div>
+      <h1 class="cs-title">SellSmart NG</h1>
+      <p class="cs-subtitle">Smart business management for the Nigerian entrepreneur running their books from a phone, not a spreadsheet.</p>
+      <div class="cs-meta-row">
+        <div class="cs-meta-item">
+          <span class="cs-meta-label">Role</span>
+          <span class="cs-meta-value">Solo Designer & Builder</span>
+        </div>
+        <div class="cs-meta-item">
+          <span class="cs-meta-label">Type</span>
+          <span class="cs-meta-value">Web App · Business Tools</span>
+        </div>
+        <div class="cs-meta-item">
+          <span class="cs-meta-label">Market</span>
+          <span class="cs-meta-value">Nigeria</span>
+        </div>
+        <div class="cs-meta-item">
+          <span class="cs-meta-label">Stack</span>
+          <span class="cs-meta-value">Dala AI · Supabase · Netlify</span>
+        </div>
+        <div class="cs-meta-item">
+          <span class="cs-meta-label">Status</span>
+          <span class="cs-meta-value" style="color: var(--pink);">● Live</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cover image -->
+  <div class="wrap">
+    <img class="cs-cover" src="images/sellsmart-cover.jpeg" alt="SellSmart NG — CircleSave, Pricing Calculator, Stock Management, and Sales screens" />
+  </div>
+
+  <!-- Body: main content + sidebar -->
+  <div class="wrap">
+    <div class="cs-body">
+
+      <!-- MAIN CONTENT -->
+      <div class="cs-main">
+
+        <!-- 01 THE PROBLEM -->
+        <div class="cs-section" id="problem">
+          <div class="cs-section-num">01 — The Problem</div>
+          <h2 class="cs-section-title">Running a business from memory</h2>
+          <p>Most small Nigerian entrepreneurs — the wig sellers, the phone-accessory hawkers, the perfume rebranders — run their entire business from memory, a notebook, or scattered WhatsApp chats. There's no single place to know, at a glance, what's selling, what's left in stock, what a fair price actually is, or where the group savings contribution stands this week.</p>
+          <p>The tools built for "small business management" are almost always designed for a different context entirely — Western retail chains with barcode scanners and POS terminals, not a trader working out of a single shop or a home-based hustle.</p>
+
+          <div class="cs-highlight">
+            <strong>The Gap</strong>
+            <p>Nigerian entrepreneurs don't need enterprise inventory software. They need something that fits in one hand, understands Naira, understands profit margin the way they actually calculate it, and understands that "saving" often means a group Ajo circle, not a bank app.</p>
+          </div>
+
+          <div class="cs-needs-grid">
+            <div class="cs-need-item">
+              <span class="cs-need-icon">📦</span>
+              <span class="cs-need-label">Stock blind spots</span>
+              <span class="cs-need-desc">No easy way to know what's running low until it's already out of stock and a sale is lost.</span>
+            </div>
+            <div class="cs-need-item">
+              <span class="cs-need-icon">🧮</span>
+              <span class="cs-need-label">Guessed pricing</span>
+              <span class="cs-need-desc">Prices set by feel, not by actually accounting for delivery cost, margin, and total investment.</span>
+            </div>
+            <div class="cs-need-item">
+              <span class="cs-need-icon">📊</span>
+              <span class="cs-need-label">No real sales record</span>
+              <span class="cs-need-desc">Sales tracked in a notebook or not at all, making it hard to know what's actually profitable.</span>
+            </div>
+            <div class="cs-need-item">
+              <span class="cs-need-icon">🐷</span>
+              <span class="cs-need-label">Informal group savings</span>
+              <span class="cs-need-desc">Ajo/Esusu circles run informally, with no shared, transparent record of who's contributed what.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 02 THE SOLUTION -->
+        <div class="cs-section" id="solution">
+          <div class="cs-section-num">02 — The Solution</div>
+          <h2 class="cs-section-title">One app, five things a trader actually needs</h2>
+          <p>SellSmart NG is a single business management app built around five core tools, all reachable from one bottom navigation bar — Home, Sales, Stock, Save, and Reports.</p>
+
+          <div class="cs-features-list">
+            <div class="cs-feature">
+              <span class="cs-feature-num">01</span>
+              <div>
+                <h4>Stock Management</h4>
+                <p>Add new products with unit cost, initial stock, and a low-stock alert level — so restocking happens before an item actually runs out, not after.</p>
+                <img src="images/sellsmart-stock.jpeg" alt="Stock Management screen — Add New Product form" />
+              </div>
+            </div>
+            <div class="cs-feature">
+              <span class="cs-feature-num">02</span>
+              <div>
+                <h4>Pricing Calculator</h4>
+                <p>Enter quantity, total stock cost, delivery, and other costs, plus a target profit margin — SellSmart NG calculates total investment, cost per item, and a recommended selling price automatically.</p>
+                <img src="images/sellsmart-pricing.jpeg" alt="Pricing calculator screen showing recommended price of ₦31,388" />
+              </div>
+            </div>
+            <div class="cs-feature">
+              <span class="cs-feature-num">03</span>
+              <div>
+                <h4>Sales Tracker</h4>
+                <p>Record each sale — product, quantity sold, price per unit — with a running feed of recent sales activity, so there's finally a real record of what's moving.</p>
+                <img src="images/sellsmart-sales.png" alt="Sales tracker screen with Record Sale form and recent activity" />
+              </div>
+            </div>
+            <div class="cs-feature">
+              <span class="cs-feature-num">04</span>
+              <div>
+                <h4>CircleSave</h4>
+                <p>A digital home for Ajo/Esusu group savings — create a savings circle and track contributions transparently, instead of relying on someone's memory of who paid this round.</p>
+                <img src="images/sellsmart-circlesave.jpeg" alt="CircleSave screen — Create Your First Circle" />
+              </div>
+            </div>
+            <div class="cs-feature">
+              <span class="cs-feature-num">05</span>
+              <div>
+                <h4>Reports</h4>
+                <p>A dedicated reports tab pulls sales, stock, and pricing data together, giving traders a real picture of their business — not just a gut feeling.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 03 DESIGN DECISIONS -->
+        <div class="cs-section" id="decisions">
+          <div class="cs-section-num">03 — Design Decisions</div>
+          <h2 class="cs-section-title">The choices that shaped the product</h2>
+
+          <div class="cs-decision-list">
+            <div class="cs-decision">
+              <div class="cs-decision-dot"></div>
+              <p><strong>Dark UI, bright green accent.</strong> A near-black background with a vivid green (money, growth) as the single accent color keeps every screen legible in bright outdoor light — a real condition for traders working from a stall or shop entrance.</p>
+            </div>
+            <div class="cs-decision">
+              <div class="cs-decision-dot"></div>
+              <p><strong>Pill-shaped white input fields on dark cards.</strong> High contrast between input fields and background makes data entry fast and error-resistant, even for less tech-confident users.</p>
+            </div>
+            <div class="cs-decision">
+              <div class="cs-decision-dot"></div>
+              <p><strong>Five-icon bottom navigation.</strong> Home, Sales, Stock, Save, Reports — every core tool reachable in one tap, with "More" absorbing anything secondary rather than crowding the main bar.</p>
+            </div>
+            <div class="cs-decision">
+              <div class="cs-decision-dot"></div>
+              <p><strong>Recommended price shown as the hero number.</strong> On the Pricing Calculator, the final recommended price is the single largest, boldest element on screen — the answer the user came for, not buried under the inputs that produced it.</p>
+            </div>
+            <div class="cs-decision">
+              <div class="cs-decision-dot"></div>
+              <p><strong>Named after a real savings tradition.</strong> CircleSave deliberately uses "Ajo/Esusu" language rather than a generic "Group Savings" label — meeting users in a tradition they already trust and understand.</p>
+            </div>
+            <div class="cs-decision">
+              <div class="cs-decision-dot"></div>
+              <p><strong>Supabase auth for secure, scalable accounts.</strong> Every trader's stock, sales, and savings data stays private and tied to their own account, without overengineering the backend.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 04 RESULTS -->
+        <div class="cs-section" id="results">
+          <div class="cs-section-num">04 — Where It Stands</div>
+          <h2 class="cs-section-title">Live, and built on Dala AI</h2>
+
+          <div class="cs-stats-row">
+            <div class="cs-stat">
+              <span class="cs-stat-num">5</span>
+              <span class="cs-stat-label">Core tools in one navigation bar</span>
+            </div>
+            <div class="cs-stat">
+              <span class="cs-stat-num">Live</span>
+              <span class="cs-stat-label">Deployed and accessible now</span>
+            </div>
+            <div class="cs-stat">
+              <span class="cs-stat-num">2026</span>
+              <span class="cs-stat-label">NextGen Knowledge Showcase entry</span>
+            </div>
+          </div>
+
+          <p>SellSmart NG is live on Netlify, with authentication and data handled by Supabase, and was built on Dala AI. It's currently being submitted to the NextGen Knowledge Showcase 2.0 competition, with a companion walkthrough video produced in Canva and CapCut.</p>
+        </div>
+
+        <!-- 05 REFLECTION -->
+        <div class="cs-section" id="reflection">
+          <div class="cs-section-num">05 — Reflection</div>
+          <h2 class="cs-section-title">What I learned</h2>
+          <p>SellSmart NG reinforced a principle I keep coming back to: the highest-value feature isn't always the most complex one. The Pricing Calculator is a handful of number fields and one multiplication formula — but for a trader who's been pricing by feel, seeing a confident, calculated recommended price is the single most useful thing the app does.</p>
+          <p>Building CircleSave also taught me the value of naming things the way users already think about them. Calling it "CircleSave" with Ajo/Esusu language built into the empty state, instead of a generic "savings group" feature, made the tool feel like it was designed by someone who understands the tradition — not translating a foreign concept into a Nigerian app.</p>
+        </div>
+
+      </div>
+      <!-- END MAIN CONTENT -->
+
+      <!-- SIDEBAR -->
+      <aside class="cs-sidebar">
+        <div class="cs-sidebar-card">
+          <div class="cs-sidebar-title">Contents</div>
+          <ul class="cs-toc">
+            <li><a href="#problem">The Problem</a></li>
+            <li><a href="#solution">The Solution</a></li>
+            <li><a href="#decisions">Design Decisions</a></li>
+            <li><a href="#results">Results</a></li>
+            <li><a href="#reflection">Reflection</a></li>
+          </ul>
+        </div>
+
+        <div class="cs-sidebar-card">
+          <div class="cs-sidebar-title">Built With</div>
+          <div class="cs-tool-pills">
+            <span class="cs-tool-pill">Dala AI</span>
+            <span class="cs-tool-pill">Supabase Auth</span>
+            <span class="cs-tool-pill">Netlify</span>
+            <span class="cs-tool-pill">Canva</span>
+            <span class="cs-tool-pill">CapCut</span>
+          </div>
+        </div>
+
+        <a href="https://sellsmartng.netlify.app" target="_blank" rel="noopener noreferrer" class="cs-live-btn">Open Live App →</a>
+        <a href="index.html#projects" class="cs-back-btn">← All Projects</a>
+      </aside>
+
+    </div>
+
+    <!-- FOOTER CTA -->
+    <div class="cs-footer-cta">
+      <h3>Have a similar problem to solve?</h3>
+      <p>I design and build products rooted in how Nigerians actually live — from first idea to live deployment.</p>
+      <a href="index.html#contact" class="btn btn-primary">Get In Touch →</a>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Blessing.J</div>
+        <p class="desc">Benin City-based UI/UX designer and no-code builder, helping founders ship clean, usable products — with a focus on tools built around how Nigerians actually live, shop, and learn.</p>
+      </div>
+      <div>
+        <div class="col-title">Navigation</div>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#projects">Work</a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="col-title">Core Craft</div>
+        <ul>
+          <li>UI/UX Design</li>
+          <li>No-Code Builds</li>
+          <li>Virtual Assistance</li>
+          <li>Social Media Strategy</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Blessing Joshua</span>
+      <span>Built with care in Benin City</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Theme toggle
+  const toggle = document.getElementById("themeToggle");
+  function getTheme() {
+    try { return localStorage.getItem("portfolio-theme") || "dark"; } catch(e) { return "dark"; }
+  }
+  function applyTheme(t) {
+    if (t === "light") {
+      document.documentElement.setAttribute("data-theme", "light");
+      toggle.textContent = "☀️";
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+      toggle.textContent = "🌙";
+    }
+  }
+  applyTheme(getTheme());
+  toggle.addEventListener("click", () => {
+    const next = getTheme() === "dark" ? "light" : "dark";
+    try { localStorage.setItem("portfolio-theme", next); } catch(e) {}
+    applyTheme(next);
+  });
+
+  // Mobile nav toggle
+  const navToggle = document.getElementById("navToggle");
+  const mainNav = document.getElementById("mainNav");
+  navToggle?.addEventListener("click", () => mainNav.classList.toggle("open"));
+
+  // Active TOC on scroll
+  const sections = document.querySelectorAll(".cs-section[id]");
+  const tocLinks = document.querySelectorAll(".cs-toc a");
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(l => l.style.color = "");
+        const active = document.querySelector(`.cs-toc a[href="#${entry.target.id}"]`);
+        if (active) active.style.color = "var(--pink)";
+      }
+    });
+  }, { rootMargin: "-20% 0px -70% 0px" });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
