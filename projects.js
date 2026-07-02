@@ -1,5 +1,24 @@
 const PROJECTS = [
   {
+    id: "sellsmart",
+    category: "Live App · No-Code Build",
+    year: "2026",
+    image: "images/sellsmart-cover.jpeg",
+    title: "SellSmart NG",
+    role: "Solo Designer & Builder",
+    tags: ["BUSINESS TOOLS", "NIGERIAN MARKET", "GROUP SAVINGS"],
+    description: "A smart business management app for Nigerian entrepreneurs — sales tracking, stock management, a pricing calculator, and CircleSave, a digital home for Ajo/Esusu group savings.",
+    challenge: "Small Nigerian entrepreneurs run their business from memory, notebooks, and WhatsApp chats — with no single place to track stock, price fairly, record sales, or manage group savings.",
+    solution: "Built one app with five core tools reachable from a single navigation bar: Sales, Stock, a Pricing Calculator, CircleSave for Ajo/Esusu savings, and Reports.",
+    tools: ["Dala AI", "Supabase Auth", "Netlify", "Canva", "CapCut"],
+    overview: "SellSmart NG helps Nigerian traders manage stock, price products fairly, track sales, and run group savings circles — all from one phone-first app.",
+    discovery: "Existing small-business tools are built for Western retail with barcode scanners and POS terminals, not a trader running a single shop or home-based hustle in Naira.",
+    results: "Shipped live with Sales Tracker, Stock Management, a Pricing Calculator with automatic recommended pricing, and CircleSave for group savings — now being submitted to the NextGen Knowledge Showcase 2.0 competition.",
+    live: "https://sellsmartng.netlify.app",
+    isLive: true,
+    caseStudyPage: "sellsmart.html"
+  },
+  {
     id: "quickcart",
     category: "UX Case Study · Prototype",
     year: "2026",
