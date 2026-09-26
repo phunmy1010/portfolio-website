@@ -1,24 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Blessing Joshua — UI/UX Designer &amp; No-Code Builder</title>
-<meta name="description" content="Blessing Joshua is a Benin City-based UI/UX designer, no-code builder, and virtual assistant crafting digital experiences for Nigerian and global brands." />
-<link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Blessing Joshua — UI/UX Designer & No-Code Builder</title>
+<meta name="description" content="Blessing Joshua — Benin City-based UI/UX designer, no-code builder, and virtual assistant."/>
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="admin.css"/>
+<script>
+(function(){
+  try{
+    var t=localStorage.getItem("pf_theme");
+    if(!t){t=window.matchMedia&&window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";}
+    if(t==="light")document.documentElement.setAttribute("data-theme","light");
+  }catch(e){}
+})();
+</script>
 </head>
 <body>
 
+<!-- ===== HEADER ===== -->
 <header>
   <div class="wrap">
-    <button class="brand" onclick="scrollToSection('home')">Blessing.J</button>
+    <button class="brand" data-editable="brand_name" onclick="scrollToSection('home')">Blessing.J</button>
     <nav class="main-nav" id="mainNav">
       <button onclick="scrollToSection('home')" class="nav-home active">Home</button>
+      <button onclick="scrollToSection('about')" class="nav-about">About</button>
       <button onclick="scrollToSection('projects')" class="nav-projects">Work</button>
+      <button onclick="scrollToSection('certifications')" class="nav-certs">Credentials</button>
       <button onclick="scrollToSection('contact')" class="nav-contact">Contact</button>
     </nav>
-    <div style="display:flex;align-items:center;gap:14px;">
-      <div class="header-photo"><img src="images/headshot.jpg" alt="Blessing Joshua" /></div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">🌙</button>
+      <div class="header-photo"><img src="images/headshot.jpg" data-editable-img="header_photo" alt="Blessing Joshua"/></div>
       <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">☰</button>
     </div>
   </div>
@@ -32,10 +46,10 @@
   <div class="wrap">
     <div class="hero-grid">
       <div class="reveal visible">
-        <span class="hero-tag">Benin City, Nigeria · Remote Worldwide</span>
-        <h1 class="hero-name">Blessing Joshua</h1>
-        <p class="hero-roles">UI/UX Designer<span class="dot">·</span>No-Code Builder<span class="dot">·</span>Virtual Assistant</p>
-        <p class="hero-desc">I design interfaces, build no-code products, and keep founders organized — combining careful visual craft with the kind of operational discipline that gets things shipped, with a particular eye for products built around how Nigerians actually shop, save, and learn.</p>
+        <span class="hero-tag" data-editable="hero_tag">Benin City, Nigeria · Remote Worldwide</span>
+        <h1 class="hero-name" data-editable="hero_name">Blessing Joshua</h1>
+        <p class="hero-roles" data-editable="hero_roles">UI/UX Designer<span class="dot">·</span>No-Code Builder<span class="dot">·</span>Virtual Assistant</p>
+        <p class="hero-desc" data-editable="hero_desc">I design interfaces, build no-code products, and keep founders organised — combining careful visual craft with the kind of operational discipline that gets things shipped, with a particular eye for products built around how Nigerians actually shop, save, and learn.</p>
         <div class="hero-ctas">
           <button class="btn btn-primary" onclick="scrollToSection('projects')">View My Work</button>
           <button class="btn btn-ghost" onclick="scrollToSection('contact')">Get In Touch</button>
@@ -43,9 +57,41 @@
       </div>
       <div class="hero-portrait-wrap reveal visible">
         <div class="hero-portrait-frame">
-          <img src="images/headshot.jpg" alt="Portrait of Blessing Joshua" />
+          <img src="images/headshot.jpg" data-editable-img="hero_headshot" alt="Portrait of Blessing Joshua"/>
         </div>
-        <span class="portrait-tag">Design · Build · Support</span>
+        <span class="portrait-tag" data-editable="portrait_tag">Design · Build · Support</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section class="section-pad" id="about">
+  <div class="wrap">
+    <span class="eyebrow">About Me</span>
+    <h2 class="section-title" data-editable="about_title">The person behind the work</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p data-editable="about_p1">I'm Blessing Joshua — a UI/UX designer and no-code builder based in Benin City, Nigeria. I build digital products that solve real problems for real Nigerians: a meal planner that uses actual market prices, a business tool that tracks Ajo savings, a learning app in pidgin and Yorùbá. My work sits at the intersection of thoughtful design and practical building.</p>
+        <p data-editable="about_p2" style="margin-top:16px;">I hold a Microsoft Certified: Azure AI Fundamentals credential and am currently completing dual 3MTT Nigeria fellowship tracks in UI/UX Design and Cloud Computing. I'm also an open source contributor through the Outreachy programme, curating peer-reviewed research for BugSigDB at Waldron Lab.</p>
+        <p data-editable="about_p3" style="margin-top:16px;">When I'm not designing or building, I shoot street photography on my phone and run a YouTube channel about tech and design for a Nigerian audience. I'm open to remote roles across time zones and can bring both creative and operational value to a team.</p>
+        <div class="about-stats">
+          <div class="stat-item">
+            <span class="stat-num" data-editable="stat_projects">9+</span>
+            <span class="stat-label">Projects Shipped</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num" data-editable="stat_clients">4+</span>
+            <span class="stat-label">Client Engagements</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-num" data-editable="stat_certs">7+</span>
+            <span class="stat-label">Certifications</span>
+          </div>
+        </div>
+      </div>
+      <div class="about-img-wrap">
+        <img src="images/headshot.jpg" data-editable-img="about_photo" alt="Blessing Joshua" class="about-photo"/>
       </div>
     </div>
   </div>
@@ -55,38 +101,38 @@
 <section class="section-pad" id="services">
   <div class="wrap">
     <span class="eyebrow">What I Do</span>
-    <h2 class="section-title">Where design meets execution</h2>
-    <p class="section-sub">Six ways I help businesses look sharper and run smoother — from first wireframe to the systems that keep them running.</p>
-    <div class="services-grid">
+    <h2 class="section-title" data-editable="services_title">Where design meets execution</h2>
+    <p class="section-sub" data-editable="services_sub">Six ways I help businesses look sharper and run smoother — from first wireframe to the systems that keep them running.</p>
+    <div class="services-grid" id="servicesGrid">
       <div class="service-card reveal">
         <div class="service-num">01</div>
-        <h3>UI/UX Design</h3>
-        <p>Wireframes, mobile-first prototypes, and pixel-precise interfaces built in Figma.</p>
+        <h3 data-editable="service_0_title">UI/UX Design</h3>
+        <p data-editable="service_0_desc">Wireframes, mobile-first prototypes, and pixel-precise interfaces built in Figma.</p>
       </div>
       <div class="service-card reveal">
         <div class="service-num">02</div>
-        <h3>No-Code App Building</h3>
-        <p>Rapid, robust web products and operational portals using no-code platforms and live database connections.</p>
+        <h3 data-editable="service_1_title">No-Code App Building</h3>
+        <p data-editable="service_1_desc">Rapid, robust web products and operational portals using no-code platforms and live database connections.</p>
       </div>
       <div class="service-card reveal">
         <div class="service-num">03</div>
-        <h3>Virtual Assistance</h3>
-        <p>Calendars, client communication, and scheduling — keeping founders and teams running on time.</p>
+        <h3 data-editable="service_2_title">Virtual Assistance</h3>
+        <p data-editable="service_2_desc">Calendars, client communication, and scheduling — keeping founders and teams running on time.</p>
       </div>
       <div class="service-card reveal">
         <div class="service-num">04</div>
-        <h3>Social Media Management</h3>
-        <p>Aesthetic feed design, consistent brand posting, and campaign assets that hold a brand together.</p>
+        <h3 data-editable="service_3_title">Social Media Management</h3>
+        <p data-editable="service_3_desc">Aesthetic feed design, consistent brand posting, and campaign assets that hold a brand together.</p>
       </div>
       <div class="service-card reveal">
         <div class="service-num">05</div>
-        <h3>Product Research</h3>
-        <p>Competitor analysis, customer feedback synthesis, and research reports that lead to a decision.</p>
+        <h3 data-editable="service_4_title">Product Research</h3>
+        <p data-editable="service_4_desc">Competitor analysis, customer feedback synthesis, and research reports that lead to a decision.</p>
       </div>
       <div class="service-card reveal">
         <div class="service-num">06</div>
-        <h3>Administrative Support</h3>
-        <p>Notion workflows, corporate folder structure, and routine checks that keep delivery flawless.</p>
+        <h3 data-editable="service_5_title">Administrative Support</h3>
+        <p data-editable="service_5_desc">Notion workflows, corporate folder structure, and routine checks that keep delivery flawless.</p>
       </div>
     </div>
   </div>
@@ -96,9 +142,8 @@
 <section class="section-pad" id="projects">
   <div class="wrap">
     <span class="eyebrow">Selected Work</span>
-    <h2 class="section-title">Case studies &amp; live builds</h2>
-    <p class="section-sub">A mix of live products, client platforms, and UX case studies — most rooted in problems specific to the Nigerian market.</p>
-
+    <h2 class="section-title" data-editable="projects_title">Case studies &amp; live builds</h2>
+    <p class="section-sub" data-editable="projects_sub">A mix of live products, client platforms, and UX case studies — most rooted in problems specific to the Nigerian market.</p>
     <div class="project-list" id="projectList"></div>
   </div>
 </section>
@@ -107,21 +152,144 @@
 <section class="section-pad" id="skills">
   <div class="wrap">
     <span class="eyebrow">My Toolbox</span>
-    <h2 class="section-title">Tools &amp; competencies</h2>
-    <p class="section-sub">The stack I reach for to move from idea to shipped product.</p>
-    <div class="skills-wrap">
+    <h2 class="section-title" data-editable="skills_title">Tools &amp; competencies</h2>
+    <p class="section-sub" data-editable="skills_sub">The stack I reach for to move from idea to shipped product.</p>
+    <div class="skills-wrap" id="skillsWrap">
       <div class="skill-pill"><span class="name">Figma</span><span class="cat">Core Design</span></div>
       <div class="skill-pill"><span class="name">Canva</span><span class="cat">Graphics</span></div>
-      <div class="skill-pill"><span class="name">Notion</span><span class="cat">Organization</span></div>
+      <div class="skill-pill"><span class="name">Notion</span><span class="cat">Organisation</span></div>
       <div class="skill-pill"><span class="name">Google Workspace</span><span class="cat">Admin</span></div>
       <div class="skill-pill"><span class="name">AppSheet</span><span class="cat">No-Code</span></div>
+      <div class="skill-pill"><span class="name">Dala AI</span><span class="cat">No-Code Build</span></div>
       <div class="skill-pill"><span class="name">GitHub</span><span class="cat">Deployment</span></div>
+      <div class="skill-pill"><span class="name">Netlify</span><span class="cat">Hosting</span></div>
       <div class="skill-pill"><span class="name">VS Code</span><span class="cat">Development</span></div>
       <div class="skill-pill"><span class="name">Supabase</span><span class="cat">Backend</span></div>
+      <div class="skill-pill"><span class="name">Groq AI</span><span class="cat">AI Integration</span></div>
+      <div class="skill-pill"><span class="name">Microsoft Azure</span><span class="cat">Cloud</span></div>
       <div class="skill-pill"><span class="name">Wireframing</span><span class="cat">UX Delivery</span></div>
       <div class="skill-pill"><span class="name">UI Research</span><span class="cat">Discovery</span></div>
-      <div class="skill-pill"><span class="name">Product Briefs</span><span class="cat">Analysis</span></div>
-      <div class="skill-pill"><span class="name">No-Code Structures</span><span class="cat">Dev</span></div>
+      <div class="skill-pill"><span class="name">Vanilla HTML/CSS/JS</span><span class="cat">Development</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CERTIFICATIONS & EXPERIENCE ===== -->
+<section class="section-pad" id="certifications">
+  <div class="wrap">
+    <span class="eyebrow">Credentials</span>
+    <h2 class="section-title" data-editable="certs_title">Certifications &amp; Experience</h2>
+    <p class="section-sub" data-editable="certs_sub">Formal credentials, fellowships, open source contributions, and prior professional experience.</p>
+
+    <div class="creds-grid">
+      <!-- Certifications column -->
+      <div>
+        <div class="creds-col-label">Certifications</div>
+        <div class="cred-list" id="certList">
+          <div class="cred-card">
+            <div class="cred-icon">🏅</div>
+            <div>
+              <h4 data-editable="cert_0_title">Microsoft Certified: Azure AI Fundamentals</h4>
+              <p data-editable="cert_0_meta">Microsoft · AI-900 · Earned August 2026</p>
+            </div>
+          </div>
+          <div class="cred-card">
+            <div class="cred-icon">🎓</div>
+            <div>
+              <h4 data-editable="cert_1_title">Foundations of UX Design</h4>
+              <p data-editable="cert_1_meta">Google · March 2026</p>
+            </div>
+          </div>
+          <div class="cred-card">
+            <div class="cred-icon">🎓</div>
+            <div>
+              <h4 data-editable="cert_2_title">Principles of UX/UI Design</h4>
+              <p data-editable="cert_2_meta">Meta · July 2024</p>
+            </div>
+          </div>
+          <div class="cred-card">
+            <div class="cred-icon">🎓</div>
+            <div>
+              <h4 data-editable="cert_3_title">Social Media Management</h4>
+              <p data-editable="cert_3_meta">Meta · April 2024</p>
+            </div>
+          </div>
+          <div class="cred-card">
+            <div class="cred-icon">🎓</div>
+            <div>
+              <h4 data-editable="cert_4_title">Intro to Android App Development</h4>
+              <p data-editable="cert_4_meta">Meta · July 2024</p>
+            </div>
+          </div>
+          <div class="cred-card">
+            <div class="cred-icon">🎓</div>
+            <div>
+              <h4 data-editable="cert_5_title">Version Control</h4>
+              <p data-editable="cert_5_meta">Meta · August 2024</p>
+            </div>
+          </div>
+          <div class="cred-card">
+            <div class="cred-icon">🎓</div>
+            <div>
+              <h4 data-editable="cert_6_title">Introduction to Food and Health</h4>
+              <p data-editable="cert_6_meta">Stanford University · November 2023</p>
+            </div>
+          </div>
+          <div class="cred-card">
+            <div class="cred-icon">🏅</div>
+            <div>
+              <h4 data-editable="cert_7_title">AI Skills Fest 2026</h4>
+              <p data-editable="cert_7_meta">Microsoft · June 2026</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fellowship & Experience column -->
+      <div>
+        <div class="creds-col-label">Fellowship &amp; Contributions</div>
+        <div class="cred-list">
+          <div class="cred-card cred-featured">
+            <div class="cred-icon">🇳🇬</div>
+            <div>
+              <h4 data-editable="fellow_0_title">3MTT Nigeria Fellow</h4>
+              <p data-editable="fellow_0_meta">Federal Ministry of Communications · UI/UX Design & Cloud Computing · Fellow ID: FE/24/161412576</p>
+            </div>
+          </div>
+          <div class="cred-card">
+            <div class="cred-icon">🌐</div>
+            <div>
+              <h4 data-editable="fellow_1_title">Open Source Contributor — BugSigDB</h4>
+              <p data-editable="fellow_1_meta">Waldron Lab · Outreachy Programme · Curating peer-reviewed microbiome research on GitHub</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="creds-col-label" style="margin-top:28px;">Prior Experience</div>
+        <div class="cred-list">
+          <div class="cred-card">
+            <div class="cred-icon">💼</div>
+            <div>
+              <h4 data-editable="exp_0_title">Administrative & Customer Support</h4>
+              <p data-editable="exp_0_meta">Various organisations · 2017–2025 · Scheduling, email management, calendar coordination, and customer support — in-office and remote</p>
+            </div>
+          </div>
+          <div class="cred-card">
+            <div class="cred-icon">📱</div>
+            <div>
+              <h4 data-editable="exp_1_title">UI/UX Designer & Social Media Manager</h4>
+              <p data-editable="exp_1_meta">AB Prime Mobile Communication Ltd · Benin City · Ongoing · Web design, brand management, social media content</p>
+            </div>
+          </div>
+          <div class="cred-card">
+            <div class="cred-icon">✂️</div>
+            <div>
+              <h4 data-editable="exp_2_title">UI/UX Designer</h4>
+              <p data-editable="exp_2_meta">Horizon Mega Unisex Salon · Benin City · Booking system design, luxury digital presence, social templates</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -130,11 +298,11 @@
 <section class="section-pad" id="opensource">
   <div class="wrap">
     <span class="eyebrow">Open Source</span>
-    <h2 class="section-title">Community curation</h2>
+    <h2 class="section-title" data-editable="os_title">Community curation</h2>
     <div class="os-card reveal">
-      <div class="org">Waldron Lab · Outreachy Program</div>
-      <h3>BugSigDB — Open Source Contributor</h3>
-      <p>Contributing to BugSigDB, an academic database cataloguing microbial signatures from published research. Work includes curating peer-reviewed studies, extracting experimental metadata, and submitting structured records via GitHub for community review.</p>
+      <div class="org" data-editable="os_org">Waldron Lab · Outreachy Program</div>
+      <h3 data-editable="os_card_title">BugSigDB — Open Source Contributor</h3>
+      <p data-editable="os_card_desc">Contributing to BugSigDB, an academic database cataloguing microbial signatures from published research. Work includes curating peer-reviewed studies, extracting experimental metadata, and submitting structured records via GitHub for community review.</p>
       <div class="project-tags" style="margin-bottom:20px;">
         <span class="tag-chip">Literature Curation</span>
         <span class="tag-chip">GitHub Contributions</span>
@@ -149,31 +317,31 @@
 <section class="section-pad" id="testimonials">
   <div class="wrap">
     <span class="eyebrow">Client Love</span>
-    <h2 class="section-title">What people say</h2>
+    <h2 class="section-title" data-editable="testi_title">What people say</h2>
     <div class="testi-grid">
       <div class="testi-card reveal">
         <span class="testi-quote-mark">"</span>
-        <p class="quote">Working with Blessing has been a really good experience for my business. She helped improve our online presence by designing a clean and professional webpage for AB PRIME MOBILE COMMUNICATION that properly showcases our gadget sales, swapping, and repair services.
+        <p class="quote" data-editable="testi_0_quote">Working with Blessing has been a really good experience for my business. She helped improve our online presence by designing a clean and professional webpage for AB PRIME MOBILE COMMUNICATION that properly showcases our gadget sales, swapping, and repair services.
 
-She also assists with managing our social media page, helping us stay active online and present our business in a more organized and attractive way. I appreciate her creativity, communication, and willingness to listen to ideas while still bringing professional suggestions to the table.
+She also assists with managing our social media page, helping us stay active online and present our business in a more organised and attractive way. I appreciate her creativity, communication, and willingness to listen to ideas while still bringing professional suggestions to the table.
 
 Since working with her, our brand looks more polished and trustworthy online. I would definitely recommend her to businesses looking for digital support, UI/UX design, or social media assistance.</p>
         <div class="testi-author">
-          <div class="testi-avatar"><img src="images/prime-flyer.jpg" alt="AB Prime Mobile Communication" /></div>
+          <div class="testi-avatar"><img src="images/prime-flyer.jpg" data-editable-img="testi_0_avatar" alt="AB Prime"/></div>
           <div>
-            <h4>Ebuka</h4>
-            <p>CEO, AB Prime Mobile Communication · Benin City</p>
+            <h4 data-editable="testi_0_name">Ebuka</h4>
+            <p data-editable="testi_0_role">CEO, AB Prime Mobile Communication · Benin City</p>
           </div>
         </div>
       </div>
       <div class="testi-card reveal">
         <span class="testi-quote-mark">"</span>
-        <p class="quote">Blessing transformed how our salon is positioned online. She designed a stunning, modern digital service menu and eye-catching social templates that match the luxury experience at Horizon Mega Unisex Salon. She also helped structure our online scheduling, making bookings incredibly easy for our clients here in Benin City. Her focus on premium aesthetics, clear communication, and operational organization has made a massive difference for our business!</p>
+        <p class="quote" data-editable="testi_1_quote">Blessing transformed how our salon is positioned online. She designed a stunning, modern digital service menu and eye-catching social templates that match the luxury experience at Horizon Mega Unisex Salon. She also helped structure our online scheduling, making bookings incredibly easy for our clients here in Benin City. Her focus on premium aesthetics, clear communication, and operational organisation has made a massive difference for our business!</p>
         <div class="testi-author">
-          <div class="testi-avatar"><img src="images/horizon-salon.jpg" alt="Horizon Mega Unisex Salon" /></div>
+          <div class="testi-avatar"><img src="images/horizon-salon.jpg" data-editable-img="testi_1_avatar" alt="Horizon Salon"/></div>
           <div>
-            <h4>Founder</h4>
-            <p>Horizon Mega Unisex Salon · Benin City</p>
+            <h4 data-editable="testi_1_name">Founder</h4>
+            <p data-editable="testi_1_role">Horizon Mega Unisex Salon · Benin City</p>
           </div>
         </div>
       </div>
@@ -185,53 +353,56 @@ Since working with her, our brand looks more polished and trustworthy online. I 
 <section class="section-pad" id="contact">
   <div class="wrap">
     <span class="eyebrow">Let's Connect</span>
-    <h2 class="section-title">Get in touch</h2>
-    <p class="section-sub">Looking for a project quote, virtual assistance, or no-code build? Reach out through whichever works best for you.</p>
+    <h2 class="section-title" data-editable="contact_title">Get in touch</h2>
+    <p class="section-sub" data-editable="contact_sub">Looking for a project quote, virtual assistance, or no-code build? Reach out through whichever works best for you.</p>
     <div class="contact-grid">
       <a class="contact-card reveal" href="mailto:Mira4diva@gmail.com">
         <div class="contact-icon" style="background:rgba(228,147,179,0.12);color:#e493b3;">✉</div>
         <div>
-          <h4>Email</h4>
-          <p>Mira4diva@gmail.com</p>
+          <h4 data-editable="contact_0_title">Email</h4>
+          <p data-editable="contact_0_val">Mira4diva@gmail.com</p>
         </div>
       </a>
-      <a class="contact-card reveal" href="https://wa.me/2349033333333" target="_blank" rel="noopener noreferrer">
+      <a class="contact-card reveal" href="https://wa.me/2348109647344" target="_blank" rel="noopener noreferrer">
         <div class="contact-icon" style="background:rgba(127,217,159,0.12);color:#7fd99f;">💬</div>
         <div>
-          <h4>WhatsApp</h4>
-          <p>Typically responds quickly</p>
+          <h4 data-editable="contact_1_title">WhatsApp</h4>
+          <p data-editable="contact_1_val">Typically responds quickly</p>
         </div>
       </a>
       <a class="contact-card reveal" href="https://github.com/phunmy1010" target="_blank" rel="noopener noreferrer">
         <div class="contact-icon" style="background:rgba(155,126,224,0.12);color:#9b7ee0;">⌥</div>
         <div>
-          <h4>GitHub</h4>
-          <p>Code &amp; project repos</p>
+          <h4 data-editable="contact_2_title">GitHub</h4>
+          <p data-editable="contact_2_val">github.com/phunmy1010</p>
         </div>
       </a>
       <div class="contact-card reveal">
         <div class="contact-icon" style="background:rgba(212,162,76,0.12);color:#d4a24c;">◷</div>
         <div>
-          <h4>Hours</h4>
-          <p>Benin City (UTC+1), responsive on weekdays</p>
+          <h4 data-editable="contact_3_title">Hours</h4>
+          <p data-editable="contact_3_val">Benin City (UTC+1) · Responsive on weekdays · Open to cross-timezone remote roles</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ===== FOOTER ===== -->
 <footer>
   <div class="wrap">
     <div class="footer-grid">
       <div>
-        <div class="footer-brand">Blessing.J</div>
-        <p class="desc">Benin City-based UI/UX designer and no-code builder, helping founders ship clean, usable products — with a focus on tools built around how Nigerians actually live, shop, and learn.</p>
+        <div class="footer-brand" data-editable="footer_brand">Blessing.J</div>
+        <p class="desc" data-editable="footer_desc">Benin City-based UI/UX designer and no-code builder, helping founders ship clean, usable products — with a focus on tools built around how Nigerians actually live, shop, and learn.</p>
       </div>
       <div>
         <div class="col-title">Navigation</div>
         <ul>
           <li><button onclick="scrollToSection('home')">Home</button></li>
+          <li><button onclick="scrollToSection('about')">About</button></li>
           <li><button onclick="scrollToSection('projects')">Work</button></li>
+          <li><button onclick="scrollToSection('certifications')">Credentials</button></li>
           <li><button onclick="scrollToSection('contact')">Contact</button></li>
         </ul>
       </div>
@@ -246,18 +417,19 @@ Since working with her, our brand looks more polished and trustworthy online. I 
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 Blessing Joshua</span>
-      <span>Built with care in Benin City</span>
+      <span data-editable="footer_copy">© 2026 Blessing Joshua</span>
+      <span data-editable="footer_tagline">Built with care in Benin City</span>
     </div>
   </div>
 </footer>
 
-<!-- ===== CASE STUDY MODAL ===== -->
+<!-- ===== MODAL ===== -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-box" id="modalBox"></div>
 </div>
 
 <script src="projects.js"></script>
 <script src="app.js"></script>
+<script src="admin.js"></script>
 </body>
 </html>
